@@ -1,0 +1,108 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum Role {
+  ADMIN
+  STUDENT
+}
+
+enum QuestionType {
+  SINGLE_CHOICE
+  MULTIPLE_CHOICE
+  TEXT
+  RATING_1_5
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  role         Role
+  studyProgram String?
+  yearOfStudy  Int?
+  createdAt    DateTime @default(now())
+
+  surveys Survey[]
+}
+
+model Survey {
+  id            String   @id @default(cuid())
+  title         String
+  description   String
+  createdById   String
+  subject       String?
+  targetYear    Int?
+  targetProgram String?
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  createdBy User       @relation(fields: [createdById], references: [id])
+  questions Question[]
+  responses Response[]
+
+  @@index([createdById])
+}
+
+model Question {
+  id         String       @id @default(cuid())
+  surveyId   String
+  text       String
+  type       QuestionType
+  isRequired Boolean      @default(true)
+  order      Int
+
+  survey  Survey           @relation(fields: [surveyId], references: [id], onDelete: Cascade)
+  options QuestionOption[]
+  answers Answer[]
+
+  @@index([surveyId])
+}
+
+model QuestionOption {
+  id         String @id @default(cuid())
+  questionId String
+  text       String
+  order      Int
+
+  question Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  answers  Answer[]
+
+  @@index([questionId])
+}
+
+model Response {
+  id             String   @id @default(cuid())
+  surveyId       String
+  submittedAt    DateTime @default(now())
+  studentYear    Int
+  studentProgram String
+
+  survey  Survey   @relation(fields: [surveyId], references: [id], onDelete: Cascade)
+  answers Answer[]
+
+  @@index([surveyId])
+}
+
+model Answer {
+  id               String  @id @default(cuid())
+  responseId       String
+  questionId       String
+  selectedOptionId String?
+  textValue        String?
+  ratingValue      Int?
+
+  response       Response        @relation(fields: [responseId], references: [id], onDelete: Cascade)
+  question       Question        @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  selectedOption QuestionOption? @relation(fields: [selectedOptionId], references: [id], onDelete: SetNull)
+
+  @@index([responseId])
+  @@index([questionId])
+}
