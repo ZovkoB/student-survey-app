@@ -1,15 +1,9 @@
-import Link from "next/link";
+import { Suspense } from "react";
 
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { AnalyticsContent } from "./analytics-content";
+import AnalyticsLoading from "./loading";
 
-export default async function SurveyAnalyticsPlaceholderPage({
+export default async function SurveyAnalyticsPage({
   params,
 }: {
   params: Promise<{ id: string }>;
@@ -17,19 +11,8 @@ export default async function SurveyAnalyticsPlaceholderPage({
   const { id } = await params;
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Analytics coming soon</CardTitle>
-        <CardDescription>
-          Detailed analytics for survey <span className="font-mono">{id}</span>{" "}
-          will be available in a future module.
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <Button asChild variant="outline">
-          <Link href="/admin/dashboard">Back to dashboard</Link>
-        </Button>
-      </CardContent>
-    </Card>
+    <Suspense fallback={<AnalyticsLoading />}>
+      <AnalyticsContent surveyId={id} />
+    </Suspense>
   );
 }
