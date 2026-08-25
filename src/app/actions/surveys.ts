@@ -4,6 +4,7 @@ import { Prisma } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 
 import { auth } from "@/auth";
+import { getAdminSurveyWhere, requireAdminUser } from "@/lib/auth/admin";
 import { prisma } from "@/lib/prisma";
 import {
   createSurveySchema,
@@ -30,24 +31,14 @@ export type AdminSurveyListItem = {
 };
 
 async function requireAdminSession() {
-  const session = await auth();
-
-  if (!session?.user?.id) {
-    return { error: "You must be signed in to perform this action." as const };
-  }
-
-  if (session.user.role !== "ADMIN") {
-    return { error: "Only administrators can manage surveys." as const };
-  }
-
-  return { session } as const;
+  return requireAdminUser();
 }
 
-async function getOwnedSurvey(surveyId: string, adminId: string) {
+async function getOwnedSurvey(surveyId: string, adminId: string, adminEmail: string) {
   return prisma.survey.findFirst({
     where: {
       id: surveyId,
-      createdById: adminId,
+      ...getAdminSurveyWhere(adminId, adminEmail),
     },
   });
 }
@@ -62,7 +53,10 @@ export async function getAdminSurveys(): Promise<
   }
 
   const surveys = await prisma.survey.findMany({
-    where: { createdById: authResult.session.user.id },
+    where: getAdminSurveyWhere(
+      authResult.admin.id,
+      authResult.admin.email,
+    ),
     orderBy: { createdAt: "desc" },
     include: {
       _count: {
@@ -122,7 +116,7 @@ export async function createSurvey(
           subject: subject || null,
           targetProgram: targetProgram || null,
           targetYear: targetYear ?? null,
-          createdById: authResult.session.user.id,
+          createdById: authResult.admin.id,
           questions: {
             create: questions.map((question) => ({
               text: question.text,
@@ -191,7 +185,8 @@ export async function toggleSurveyStatus(
 
   const survey = await getOwnedSurvey(
     surveyId,
-    authResult.session.user.id,
+    authResult.admin.id,
+    authResult.admin.email,
   );
 
   if (!survey) {
@@ -232,7 +227,8 @@ export async function deleteSurvey(
 
   const survey = await getOwnedSurvey(
     surveyId,
-    authResult.session.user.id,
+    authResult.admin.id,
+    authResult.admin.email,
   );
 
   if (!survey) {

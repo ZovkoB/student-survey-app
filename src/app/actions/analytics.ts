@@ -2,7 +2,7 @@
 
 import { QuestionType } from "@prisma/client";
 
-import { auth } from "@/auth";
+import { getAdminSurveyWhere, requireAdminUser } from "@/lib/auth/admin";
 import { prisma } from "@/lib/prisma";
 
 export type AnalyticsActionResult<T = void> = {
@@ -94,20 +94,19 @@ export type SurveyAnalyticsData = {
 const TEXT_RESPONSES_LIMIT = 20;
 
 async function requireAdminOwner(surveyId: string) {
-  const session = await auth();
+  const authResult = await requireAdminUser();
 
-  if (!session?.user?.id) {
-    return { error: "You must be signed in to view analytics." as const };
-  }
-
-  if (session.user.role !== "ADMIN") {
-    return { error: "Only administrators can view survey analytics." as const };
+  if ("error" in authResult) {
+    return { error: authResult.error } as const;
   }
 
   const survey = await prisma.survey.findFirst({
     where: {
       id: surveyId,
-      createdById: session.user.id,
+      ...getAdminSurveyWhere(
+        authResult.admin.id,
+        authResult.admin.email,
+      ),
     },
     include: {
       questions: {
@@ -136,7 +135,7 @@ async function requireAdminOwner(surveyId: string) {
     return { error: "Survey not found or you do not have access." as const };
   }
 
-  return { survey, session } as const;
+  return { survey, admin: authResult.admin } as const;
 }
 
 function calculateMedian(values: number[]) {
