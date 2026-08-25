@@ -30,6 +30,7 @@ model User {
   createdAt    DateTime @default(now())
 
   surveys Survey[]
+  responses Response[]
 }
 
 model Survey {
@@ -81,14 +82,18 @@ model QuestionOption {
 model Response {
   id             String   @id @default(cuid())
   surveyId       String
+  studentId      String
   submittedAt    DateTime @default(now())
   studentYear    Int
   studentProgram String
 
   survey  Survey   @relation(fields: [surveyId], references: [id], onDelete: Cascade)
+  student User     @relation(fields: [studentId], references: [id], onDelete: Cascade)
   answers Answer[]
 
+  @@unique([surveyId, studentId])
   @@index([surveyId])
+  @@index([studentId])
 }
 
 model Answer {
