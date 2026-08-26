@@ -18,12 +18,12 @@ const BCRYPT_SALT_ROUNDS = 10;
 const studentsSeed = [
   {
     email: "marko.ramic@fsre.sum.ba",
-    studyProgram: "Racunarstvo",
+    studyProgram: "Računarstvo",
     yearOfStudy: 1,
   },
   {
     email: "ana.hodzic@fsre.sum.ba",
-    studyProgram: "Racunarstvo",
+    studyProgram: "Računarstvo",
     yearOfStudy: 3,
   },
   {
@@ -445,7 +445,7 @@ async function main() {
     description:
       "Anketa za studente smjera Računarstvo o kvaliteti nastave predmeta Programiranje u ljetnom semestru.",
     subject: "Programiranje",
-    targetProgram: "Racunarstvo",
+    targetProgram: "Računarstvo",
     questions: [
       {
         text: "Kako ocjenjujete jasnoću predavanja?",

@@ -3,7 +3,15 @@
 import { QuestionType } from "@prisma/client";
 
 import { getAdminSurveyWhere, requireAdminUser } from "@/lib/auth/admin";
+import {
+  type AnalyticsSegmentFilters,
+  isAnalyticsSegmentActive,
+} from "@/lib/analytics/filters";
 import { prisma } from "@/lib/prisma";
+import {
+  normalizeStudyProgram,
+  UTF8_BOM,
+} from "@/lib/study-program";
 
 export type AnalyticsActionResult<T = void> = {
   success: boolean;
@@ -88,10 +96,19 @@ export type SurveyAnalyticsData = {
     programs: DemographicBucket[];
     years: DemographicBucket[];
   };
+  segment: {
+    program: string | null;
+    year: number | null;
+    isActive: boolean;
+    label: string | null;
+    totalResponsesInSurvey: number;
+  };
   questions: QuestionAnalytics[];
 };
 
 const TEXT_RESPONSES_LIMIT = 20;
+const CSV_DELIMITER = ";";
+const CSV_CONTENT_TYPE = "text/csv; charset=utf-8";
 
 async function requireAdminOwner(surveyId: string) {
   const authResult = await requireAdminUser();
@@ -162,9 +179,13 @@ function buildDemographics(
   const yearCounts = new Map<number, number>();
 
   for (const response of responses) {
+    const normalizedProgram =
+      normalizeStudyProgram(response.studentProgram) ??
+      response.studentProgram.trim();
+
     programCounts.set(
-      response.studentProgram,
-      (programCounts.get(response.studentProgram) ?? 0) + 1,
+      normalizedProgram,
+      (programCounts.get(normalizedProgram) ?? 0) + 1,
     );
     yearCounts.set(
       response.studentYear,
@@ -189,6 +210,54 @@ function buildDemographics(
     .sort((a, b) => Number(a.label.replace("Year ", "")) - Number(b.label.replace("Year ", "")));
 
   return { programs, years };
+}
+
+type SurveyResponseRecord = {
+  submittedAt: Date;
+  studentProgram: string;
+  studentYear: number;
+  answers: {
+    questionId: string;
+    selectedOptionId: string | null;
+    textValue: string | null;
+    ratingValue: number | null;
+    selectedOption: { id: string; text: string } | null;
+  }[];
+};
+
+function filterResponsesBySegment(
+  responses: SurveyResponseRecord[],
+  filters: AnalyticsSegmentFilters,
+) {
+  return responses.filter((response) => {
+    const normalizedProgram =
+      normalizeStudyProgram(response.studentProgram) ??
+      response.studentProgram.trim();
+
+    if (filters.program && normalizedProgram !== filters.program) {
+      return false;
+    }
+
+    if (filters.year !== null && response.studentYear !== filters.year) {
+      return false;
+    }
+
+    return true;
+  });
+}
+
+function buildSegmentLabel(filters: AnalyticsSegmentFilters) {
+  const parts: string[] = [];
+
+  if (filters.program) {
+    parts.push(filters.program);
+  }
+
+  if (filters.year !== null) {
+    parts.push(`Year ${filters.year}`);
+  }
+
+  return parts.length > 0 ? parts.join(" · ") : null;
 }
 
 function buildQuestionAnalytics(
@@ -308,7 +377,9 @@ function buildQuestionAnalytics(
     .map((answer) => ({
       text: answer.textValue!.trim(),
       submittedAt: answer.submittedAt.toISOString(),
-      studentProgram: answer.studentProgram,
+      studentProgram:
+        normalizeStudyProgram(answer.studentProgram) ??
+        answer.studentProgram.trim(),
       studentYear: answer.studentYear,
     }));
 
@@ -324,6 +395,7 @@ function buildQuestionAnalytics(
 
 export async function getSurveyAnalytics(
   surveyId: string,
+  filters: AnalyticsSegmentFilters = { program: null, year: null },
 ): Promise<AnalyticsActionResult<SurveyAnalyticsData>> {
   const authResult = await requireAdminOwner(surveyId);
 
@@ -332,10 +404,12 @@ export async function getSurveyAnalytics(
   }
 
   const { survey } = authResult;
-  const totalResponses = survey.responses.length;
-  const demographics = buildDemographics(survey.responses);
+  const totalResponsesInSurvey = survey.responses.length;
+  const filteredResponses = filterResponsesBySegment(survey.responses, filters);
+  const totalResponses = filteredResponses.length;
+  const demographics = buildDemographics(filteredResponses);
 
-  const allRatings = survey.responses.flatMap((response) =>
+  const allRatings = filteredResponses.flatMap((response) =>
     response.answers
       .filter((answer) => answer.ratingValue !== null)
       .map((answer) => answer.ratingValue!),
@@ -355,8 +429,10 @@ export async function getSurveyAnalytics(
       : null;
 
   const questions = survey.questions.map((question) =>
-    buildQuestionAnalytics(question, survey.responses),
+    buildQuestionAnalytics(question, filteredResponses),
   );
+
+  const segmentActive = isAnalyticsSegmentActive(filters);
 
   return {
     success: true,
@@ -375,6 +451,13 @@ export async function getSurveyAnalytics(
         topProgram,
       },
       demographics,
+      segment: {
+        program: filters.program,
+        year: filters.year,
+        isActive: segmentActive,
+        label: buildSegmentLabel(filters),
+        totalResponsesInSurvey,
+      },
       questions,
     },
   };
@@ -383,7 +466,7 @@ export async function getSurveyAnalytics(
 function escapeCsvValue(value: string | number | null | undefined) {
   const stringValue = value === null || value === undefined ? "" : String(value);
 
-  if (/[",\n]/.test(stringValue)) {
+  if (/[";\n,]/.test(stringValue)) {
     return `"${stringValue.replace(/"/g, '""')}"`;
   }
 
@@ -409,12 +492,56 @@ function formatAnswerValue(
   return answers
     .map((answer) => answer.selectedOption?.text ?? "")
     .filter(Boolean)
-    .join("; ");
+    .join(" | ");
+}
+
+function transliterateCroatianForFilename(value: string) {
+  return value
+    .replace(/đ/g, "dj")
+    .replace(/Đ/g, "Dj")
+    .replace(/[ćč]/g, "c")
+    .replace(/[ĆČ]/g, "C")
+    .replace(/[š]/g, "s")
+    .replace(/[Š]/g, "S")
+    .replace(/[ž]/g, "z")
+    .replace(/[Ž]/g, "Z");
+}
+
+function slugifySurveyTitleForFilename(title: string) {
+  const transliterated = transliterateCroatianForFilename(title.trim());
+
+  return (
+    transliterated
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-|-$/g, "") || "survey"
+  );
+}
+
+function buildCsvExportFilenames(title: string) {
+  const trimmedTitle = title.trim() || "survey";
+  const originalFilename = `${trimmedTitle}-responses.csv`;
+  const safeFilename = `${slugifySurveyTitleForFilename(trimmedTitle)}-responses.csv`;
+  const contentDisposition = `attachment; filename="${safeFilename}"; filename*=UTF-8''${encodeURIComponent(originalFilename)}`;
+
+  return {
+    originalFilename,
+    safeFilename,
+    contentDisposition,
+  };
 }
 
 export async function exportSurveyDataCsv(
   surveyId: string,
-): Promise<AnalyticsActionResult<{ csv: string; filename: string }>> {
+): Promise<
+  AnalyticsActionResult<{
+    csvBuffer: Buffer;
+    safeFilename: string;
+    originalFilename: string;
+    contentDisposition: string;
+    contentType: typeof CSV_CONTENT_TYPE;
+  }>
+> {
   const authResult = await requireAdminOwner(surveyId);
 
   if ("error" in authResult) {
@@ -435,7 +562,8 @@ export async function exportSurveyDataCsv(
     const baseColumns = [
       response.id,
       response.submittedAt.toISOString(),
-      response.studentProgram,
+      normalizeStudyProgram(response.studentProgram) ??
+        response.studentProgram.trim(),
       response.studentYear,
     ];
 
@@ -449,21 +577,27 @@ export async function exportSurveyDataCsv(
 
     return [...baseColumns, ...questionColumns]
       .map((value) => escapeCsvValue(value))
-      .join(",");
+      .join(CSV_DELIMITER);
   });
 
-  const csv = [headers.map((header) => escapeCsvValue(header)).join(","), ...rows].join(
-    "\n",
-  );
-
-  const filename = `${survey.title
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-|-$/g, "")}-responses.csv`;
+  const csvBody = [
+    headers.map((header) => escapeCsvValue(header)).join(CSV_DELIMITER),
+    ...rows,
+  ].join("\n");
+  const csvString = `${UTF8_BOM}${csvBody}`;
+  const csvBuffer = Buffer.from(csvString, "utf-8");
+  const { originalFilename, safeFilename, contentDisposition } =
+    buildCsvExportFilenames(survey.title);
 
   return {
     success: true,
     message: "CSV export generated successfully.",
-    data: { csv, filename },
+    data: {
+      csvBuffer,
+      safeFilename,
+      originalFilename,
+      contentDisposition,
+      contentType: CSV_CONTENT_TYPE,
+    },
   };
 }

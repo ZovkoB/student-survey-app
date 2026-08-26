@@ -6,6 +6,7 @@ import { revalidatePath } from "next/cache";
 import { auth } from "@/auth";
 import { getAdminSurveyWhere, requireAdminUser } from "@/lib/auth/admin";
 import { prisma } from "@/lib/prisma";
+import { normalizeStudyProgram } from "@/lib/study-program";
 import {
   createSurveySchema,
   type CreateSurveyInput,
@@ -114,7 +115,7 @@ export async function createSurvey(
           title,
           description,
           subject: subject || null,
-          targetProgram: targetProgram || null,
+          targetProgram: normalizeStudyProgram(targetProgram),
           targetYear: targetYear ?? null,
           createdById: authResult.admin.id,
           questions: {

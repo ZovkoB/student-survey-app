@@ -6,6 +6,10 @@ import { revalidatePath } from "next/cache";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import {
+  getStudyProgramMatchValues,
+  normalizeStudyProgram,
+} from "@/lib/study-program";
+import {
   submitSurveyResponseSchema,
   validateSubmissionAgainstSurvey,
   type SubmitSurveyResponseInput,
@@ -82,9 +86,15 @@ function buildSurveyTargetingFilter(
   studyProgram: string | null | undefined,
   yearOfStudy: number | null | undefined,
 ): Prisma.SurveyWhereInput {
-  const programFilter: Prisma.SurveyWhereInput = studyProgram
+  const normalizedProgram = normalizeStudyProgram(studyProgram);
+  const programMatchValues = getStudyProgramMatchValues(studyProgram);
+
+  const programFilter: Prisma.SurveyWhereInput = normalizedProgram
     ? {
-        OR: [{ targetProgram: null }, { targetProgram: studyProgram }],
+        OR: [
+          { targetProgram: null },
+          { targetProgram: { in: programMatchValues } },
+        ],
       }
     : { targetProgram: null };
 
@@ -319,10 +329,20 @@ export async function submitSurveyResponse(
     };
   }
 
+  const normalizedStudentProgram = normalizeStudyProgram(student.studyProgram);
+
+  if (!normalizedStudentProgram) {
+    return {
+      success: false,
+      message:
+        "Your profile is missing a valid study program. Please contact support.",
+    };
+  }
+
   const survey = await prisma.survey.findFirst({
     where: {
       id: parsed.data.surveyId,
-      ...buildSurveyTargetingFilter(student.studyProgram, student.yearOfStudy),
+      ...buildSurveyTargetingFilter(normalizedStudentProgram, student.yearOfStudy),
     },
     include: {
       questions: {
@@ -392,7 +412,7 @@ export async function submitSurveyResponse(
           surveyId: survey.id,
           studentId: student.id,
           studentYear: student.yearOfStudy!,
-          studentProgram: student.studyProgram!,
+          studentProgram: normalizedStudentProgram,
           answers: {
             create: parsed.data.answers.map((answer) => ({
               questionId: answer.questionId,

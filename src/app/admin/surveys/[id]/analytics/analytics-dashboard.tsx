@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ChevronLeft, Star, Users, GraduationCap } from "lucide-react";
 
 import type { SurveyAnalyticsData } from "@/app/actions/analytics";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -21,6 +22,7 @@ import {
   TextQuestionList,
 } from "./analytics-charts";
 import { ExportCsvButton } from "./export-csv-button";
+import { AnalyticsSegmentFiltersBar } from "./analytics-segment-filters-bar";
 
 type AnalyticsDashboardProps = {
   data: SurveyAnalyticsData;
@@ -58,6 +60,32 @@ export function AnalyticsDashboard({ data }: AnalyticsDashboardProps) {
         </div>
         <ExportCsvButton surveyId={data.survey.id} />
       </div>
+
+      <AnalyticsSegmentFiltersBar
+        program={data.segment.program}
+        year={data.segment.year}
+      />
+
+      {data.segment.isActive && (
+        <Alert>
+          <AlertDescription>
+            Showing filtered segment
+            {data.segment.label ? `: ${data.segment.label}` : ""} —{" "}
+            {data.summary.totalResponses} of {data.segment.totalResponsesInSurvey}{" "}
+            total response
+            {data.segment.totalResponsesInSurvey === 1 ? "" : "s"}.
+          </AlertDescription>
+        </Alert>
+      )}
+
+      {data.segment.isActive && data.summary.totalResponses === 0 && (
+        <Alert variant="destructive">
+          <AlertDescription>
+            No responses match the selected segment filters. Try broadening your
+            program or year selection.
+          </AlertDescription>
+        </Alert>
+      )}
 
       <div className="grid gap-4 md:grid-cols-3">
         <Card>
@@ -107,7 +135,9 @@ export function AnalyticsDashboard({ data }: AnalyticsDashboardProps) {
             Demographic Breakdown
           </h2>
           <p className="text-sm text-muted-foreground">
-            How respondents are distributed by program and year of study.
+            {data.segment.isActive
+              ? "Distribution within the selected segment."
+              : "How respondents are distributed by program and year of study."}
           </p>
         </div>
         <div className="grid gap-4 xl:grid-cols-2">
@@ -130,7 +160,9 @@ export function AnalyticsDashboard({ data }: AnalyticsDashboardProps) {
             Question Breakdown
           </h2>
           <p className="text-sm text-muted-foreground">
-            Detailed analytics for each survey question.
+            {data.segment.isActive
+              ? "Question analytics for the selected segment."
+              : "Detailed analytics for each survey question."}
           </p>
         </div>
         <div className="space-y-6">

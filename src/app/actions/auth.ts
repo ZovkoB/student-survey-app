@@ -4,6 +4,7 @@ import bcrypt from "bcryptjs";
 import { Prisma } from "@prisma/client";
 
 import { prisma } from "@/lib/prisma";
+import { normalizeStudyProgram } from "@/lib/study-program";
 import { registerSchema, type RegisterInput } from "@/lib/validations/auth";
 
 export type AuthActionState = {
@@ -77,7 +78,10 @@ export async function registerUser(
         email: normalizedEmail,
         passwordHash,
         role,
-        studyProgram: role === "STUDENT" ? studyProgram : null,
+        studyProgram:
+          role === "STUDENT"
+            ? normalizeStudyProgram(studyProgram)
+            : null,
         yearOfStudy: role === "STUDENT" ? yearOfStudy : null,
       },
     });
