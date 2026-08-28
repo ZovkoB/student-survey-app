@@ -45,20 +45,20 @@ export function AnalyticsSegmentFilters({
   }
 
   return (
-    <div className="rounded-lg border bg-background p-4">
+    <div className="rounded-xl border bg-background p-4 shadow-sm">
       <div className="mb-4 flex items-center gap-2 text-sm font-medium">
         <Filter className="h-4 w-4 text-muted-foreground" />
-        Segment filters
+        Filteri segmenta
       </div>
       <div className="grid gap-4 sm:grid-cols-2 lg:max-w-2xl">
         <div className="space-y-2">
-          <Label htmlFor="analytics-program-filter">Study Program</Label>
+          <Label htmlFor="analytics-program-filter">Studijski smjer</Label>
           <Select
             value={getAnalyticsProgramParam(program)}
             onValueChange={(value) => updateFilter("program", value)}
           >
             <SelectTrigger id="analytics-program-filter">
-              <SelectValue placeholder="All Programs" />
+              <SelectValue placeholder="Svi smjerovi" />
             </SelectTrigger>
             <SelectContent>
               {ANALYTICS_PROGRAM_OPTIONS.map((option) => (
@@ -70,13 +70,13 @@ export function AnalyticsSegmentFilters({
           </Select>
         </div>
         <div className="space-y-2">
-          <Label htmlFor="analytics-year-filter">Year of Study</Label>
+          <Label htmlFor="analytics-year-filter">Godina studija</Label>
           <Select
             value={getAnalyticsYearParam(year)}
             onValueChange={(value) => updateFilter("year", value)}
           >
             <SelectTrigger id="analytics-year-filter">
-              <SelectValue placeholder="All Years" />
+              <SelectValue placeholder="Sve godine" />
             </SelectTrigger>
             <SelectContent>
               {ANALYTICS_YEAR_OPTIONS.map((option) => (

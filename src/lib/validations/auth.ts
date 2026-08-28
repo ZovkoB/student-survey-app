@@ -1,61 +1,52 @@
 import { z } from "zod";
 
+const FSRE_EMAIL_SUFFIX = "@fsre.sum.ba";
+
 export const loginSchema = z.object({
   email: z
     .string()
     .trim()
-    .min(1, "Email is required")
-    .email("Enter a valid email address"),
-  password: z.string().min(1, "Password is required"),
+    .min(1, "E-pošta je obavezna")
+    .email("Unesite valjanu e-mail adresu"),
+  password: z.string().min(1, "Lozinka je obavezna"),
 });
 
-const baseRegisterSchema = z.object({
-  email: z
-    .string()
-    .trim()
-    .min(1, "Email is required")
-    .email("Enter a valid email address"),
-  password: z
-    .string()
-    .min(8, "Password must be at least 8 characters"),
-  confirmPassword: z.string().min(1, "Please confirm your password"),
-  role: z.enum(["ADMIN", "STUDENT"], {
-    required_error: "Please select a role",
-    invalid_type_error: "Please select a role",
-  }),
-  studyProgram: z.string().trim().optional(),
-  yearOfStudy: z.coerce.number().int().optional(),
-});
-
-export const registerSchema = baseRegisterSchema
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords do not match",
-    path: ["confirmPassword"],
+export const registerSchema = z
+  .object({
+    email: z
+      .string()
+      .trim()
+      .min(1, "E-pošta je obavezna")
+      .email("Unesite valjanu e-mail adresu")
+      .refine(
+        (value) => value.toLowerCase().endsWith(FSRE_EMAIL_SUFFIX),
+        "Registracija je moguća samo s fakultetskom e-poštom (@fsre.sum.ba)",
+      ),
+    password: z
+      .string()
+      .min(8, "Lozinka mora imati najmanje 8 znakova"),
+    confirmPassword: z.string().min(1, "Potvrdite lozinku"),
+    studyProgram: z
+      .string()
+      .trim()
+      .min(1, "Studijski smjer je obavezan"),
+    yearOfStudy: z.coerce
+      .number()
+      .int()
+      .min(1, "Unesite valjanu godinu studija (1–6)")
+      .max(6, "Unesite valjanu godinu studija (1–6)"),
   })
-  .superRefine((data, ctx) => {
-    if (data.role === "STUDENT") {
-      if (!data.studyProgram || data.studyProgram.length === 0) {
-        ctx.addIssue({
-          code: "custom",
-          message: "Study program is required for students",
-          path: ["studyProgram"],
-        });
-      }
-
-      if (
-        data.yearOfStudy === undefined ||
-        Number.isNaN(data.yearOfStudy) ||
-        data.yearOfStudy < 1 ||
-        data.yearOfStudy > 6
-      ) {
-        ctx.addIssue({
-          code: "custom",
-          message: "Enter a valid year of study (1–6)",
-          path: ["yearOfStudy"],
-        });
-      }
-    }
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Lozinke se ne podudaraju",
+    path: ["confirmPassword"],
   });
 
 export type LoginInput = z.infer<typeof loginSchema>;
 export type RegisterInput = z.infer<typeof registerSchema>;
+
+export const FSRE_EMAIL_DOMAIN_MESSAGE =
+  "Registracija je moguća samo s fakultetskom e-poštom (@fsre.sum.ba)";
+
+export function isFsreEmail(email: string): boolean {
+  return email.trim().toLowerCase().endsWith(FSRE_EMAIL_SUFFIX);
+}

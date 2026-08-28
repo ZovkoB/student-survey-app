@@ -5,7 +5,6 @@ import { ChevronLeft } from "lucide-react";
 import { getSurveyById } from "@/app/actions/student-surveys";
 import { auth } from "@/auth";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Button } from "@/components/ui/button";
 
 import { SurveyFillerForm } from "./survey-filler-form";
 
@@ -28,18 +27,21 @@ export default async function SurveyFillPage({
   const result = await getSurveyById(id);
 
   if (!result.success) {
-    if (result.message.includes("already completed")) {
+    if (result.message.includes("Već ste ispunili")) {
       return (
-        <div className="space-y-6">
-          <Button asChild variant="ghost" className="px-0 hover:bg-transparent">
-            <Link href="/surveys">
+        <div className="flex min-h-screen flex-col justify-between bg-[#f3f2f8 px-4 py-8">
+          <div className="mx-auto w-full max-w-4xl space-y-6">
+            <Link
+              href="/surveys"
+              className="inline-flex items-center gap-1 text-sm font-medium text-slate-600 transition-colors hover:text-slate-900"
+            >
               <ChevronLeft className="h-4 w-4" />
-              Back to surveys
+              Natrag na ankete
             </Link>
-          </Button>
-          <Alert>
-            <AlertDescription>{result.message}</AlertDescription>
-          </Alert>
+            <Alert>
+              <AlertDescription>{result.message}</AlertDescription>
+            </Alert>
+          </div>
         </div>
       );
     }
@@ -52,14 +54,17 @@ export default async function SurveyFillPage({
   }
 
   return (
-    <div className="mx-auto max-w-3xl space-y-6">
-      <Button asChild variant="ghost" className="px-0 hover:bg-transparent">
-        <Link href="/surveys">
+    <div className="flex min-h-screen flex-col justify-between bg-[#f3f2f8 px-4 py-8">
+      <div className="mx-auto w-full max-w-4xl space-y-6">
+        <Link
+          href="/surveys"
+          className="inline-flex items-center gap-1 text-sm font-medium text-slate-600 transition-colors hover:text-slate-900"
+        >
           <ChevronLeft className="h-4 w-4" />
-          Back to surveys
+          Natrag na ankete
         </Link>
-      </Button>
-      <SurveyFillerForm survey={result.data} />
+        <SurveyFillerForm survey={result.data} />
+      </div>
     </div>
   );
 }

@@ -49,7 +49,7 @@ export function buildSurveyResponseFormSchema(
           if (question.isRequired) {
             ctx.addIssue({
               code: z.ZodIssueCode.custom,
-              message: "This question is required",
+              message: "Ovo pitanje je obavezno",
               path: ["answers", question.id],
             });
           }
@@ -62,7 +62,7 @@ export function buildSurveyResponseFormSchema(
               if (question.isRequired) {
                 ctx.addIssue({
                   code: z.ZodIssueCode.custom,
-                  message: "Please select an option",
+                  message: "Odaberite opciju",
                   path: ["answers", question.id, "selectedOptionId"],
                 });
               }
@@ -73,7 +73,7 @@ export function buildSurveyResponseFormSchema(
             ) {
               ctx.addIssue({
                 code: z.ZodIssueCode.custom,
-                message: "Invalid option selected",
+                message: "Odabrana opcija nije valjana",
                 path: ["answers", question.id, "selectedOptionId"],
               });
             }
@@ -84,7 +84,7 @@ export function buildSurveyResponseFormSchema(
             if (selected.length === 0 && question.isRequired) {
               ctx.addIssue({
                 code: z.ZodIssueCode.custom,
-                message: "Select at least one option",
+                message: "Odaberite barem jednu opciju",
                 path: ["answers", question.id, "selectedOptionIds"],
               });
             }
@@ -93,7 +93,7 @@ export function buildSurveyResponseFormSchema(
               if (!question.options.some((option) => option.id === optionId)) {
                 ctx.addIssue({
                   code: z.ZodIssueCode.custom,
-                  message: "Invalid option selected",
+                  message: "Odabrana opcija nije valjana",
                   path: ["answers", question.id, "selectedOptionIds"],
                 });
               }
@@ -105,7 +105,7 @@ export function buildSurveyResponseFormSchema(
             if (!text && question.isRequired) {
               ctx.addIssue({
                 code: z.ZodIssueCode.custom,
-                message: "Please enter a response",
+                message: "Unesite odgovor",
                 path: ["answers", question.id, "textValue"],
               });
             }
@@ -119,7 +119,7 @@ export function buildSurveyResponseFormSchema(
             ) {
               ctx.addIssue({
                 code: z.ZodIssueCode.custom,
-                message: "Please provide a rating",
+                message: "Odaberite ocjenu",
                 path: ["answers", question.id, "ratingValue"],
               });
             } else if (
@@ -128,7 +128,7 @@ export function buildSurveyResponseFormSchema(
             ) {
               ctx.addIssue({
                 code: z.ZodIssueCode.custom,
-                message: "Rating must be between 1 and 5",
+                message: "Ocjena mora biti između 1 i 5",
                 path: ["answers", question.id, "ratingValue"],
               });
             }

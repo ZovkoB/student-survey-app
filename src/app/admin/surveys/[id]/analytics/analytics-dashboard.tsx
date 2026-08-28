@@ -13,6 +13,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { formatRating } from "@/lib/analytics/constants";
+import { formatResponseCount } from "@/lib/i18n/hr";
 
 import {
   ChoiceQuestionChart,
@@ -36,7 +37,7 @@ export function AnalyticsDashboard({ data }: AnalyticsDashboardProps) {
           <Button asChild variant="ghost" className="px-0 hover:bg-transparent">
             <Link href="/admin/dashboard">
               <ChevronLeft className="h-4 w-4" />
-              Back to dashboard
+              Natrag na nadzornu ploču
             </Link>
           </Button>
           <div>
@@ -45,7 +46,7 @@ export function AnalyticsDashboard({ data }: AnalyticsDashboardProps) {
                 {data.survey.title}
               </h1>
               <Badge variant={data.survey.isActive ? "success" : "muted"}>
-                {data.survey.isActive ? "Active" : "Inactive"}
+                {data.survey.isActive ? "Aktivno" : "Neaktivno"}
               </Badge>
             </div>
             <p className="mt-1 max-w-3xl text-muted-foreground">
@@ -53,7 +54,7 @@ export function AnalyticsDashboard({ data }: AnalyticsDashboardProps) {
             </p>
             {data.survey.subject && (
               <p className="mt-1 text-sm text-muted-foreground">
-                Subject: {data.survey.subject}
+                Predmet: {data.survey.subject}
               </p>
             )}
           </div>
@@ -69,11 +70,14 @@ export function AnalyticsDashboard({ data }: AnalyticsDashboardProps) {
       {data.segment.isActive && (
         <Alert>
           <AlertDescription>
-            Showing filtered segment
+            Prikaz filtriranog segmenta
             {data.segment.label ? `: ${data.segment.label}` : ""} —{" "}
-            {data.summary.totalResponses} of {data.segment.totalResponsesInSurvey}{" "}
-            total response
-            {data.segment.totalResponsesInSurvey === 1 ? "" : "s"}.
+            {data.summary.totalResponses} od{" "}
+            {data.segment.totalResponsesInSurvey}{" "}
+            {data.segment.totalResponsesInSurvey === 1
+              ? "ukupnog odgovora"
+              : "ukupnih odgovora"}
+            .
           </AlertDescription>
         </Alert>
       )}
@@ -81,48 +85,47 @@ export function AnalyticsDashboard({ data }: AnalyticsDashboardProps) {
       {data.segment.isActive && data.summary.totalResponses === 0 && (
         <Alert variant="destructive">
           <AlertDescription>
-            No responses match the selected segment filters. Try broadening your
-            program or year selection.
+            Nema odgovora koji odgovaraju odabranim filterima. Pokušajte
+            proširiti odabir smjera ili godine.
           </AlertDescription>
         </Alert>
       )}
 
       <div className="grid gap-4 md:grid-cols-3">
-        <Card>
+        <Card className="transition-shadow hover:shadow-md">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Responses</CardTitle>
+            <CardTitle className="text-sm font-medium">Ukupno odgovora</CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold">{data.summary.totalResponses}</div>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="transition-shadow hover:shadow-md">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Average Rating</CardTitle>
+            <CardTitle className="text-sm font-medium">Prosječna ocjena</CardTitle>
             <Star className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold">
               {data.summary.averageRating !== null
                 ? formatRating(data.summary.averageRating)
-                : "N/A"}
+                : "N/P"}
             </div>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="transition-shadow hover:shadow-md">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Top Program</CardTitle>
+            <CardTitle className="text-sm font-medium">Vodeći smjer</CardTitle>
             <GraduationCap className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {data.summary.topProgram?.label ?? "N/A"}
+              {data.summary.topProgram?.label ?? "N/P"}
             </div>
             {data.summary.topProgram && (
               <p className="text-sm text-muted-foreground">
-                {data.summary.topProgram.count} response
-                {data.summary.topProgram.count === 1 ? "" : "s"}
+                {formatResponseCount(data.summary.topProgram.count)}
               </p>
             )}
           </CardContent>
@@ -132,23 +135,23 @@ export function AnalyticsDashboard({ data }: AnalyticsDashboardProps) {
       <section className="space-y-4">
         <div>
           <h2 className="text-2xl font-semibold tracking-tight">
-            Demographic Breakdown
+            Demografska struktura
           </h2>
           <p className="text-sm text-muted-foreground">
             {data.segment.isActive
-              ? "Distribution within the selected segment."
-              : "How respondents are distributed by program and year of study."}
+              ? "Raspodjela unutar odabranog segmenta."
+              : "Kako su ispitanici raspoređeni po smjeru i godini studija."}
           </p>
         </div>
         <div className="grid gap-4 xl:grid-cols-2">
           <DemographicBarChart
-            title="Responses by Program"
-            description="Number of submissions from each study program"
+            title="Odgovori po smjeru"
+            description="Broj predanih anketa po studijskom smjeru"
             data={data.demographics.programs}
           />
           <DemographicPieChart
-            title="Responses by Year"
-            description="Share of submissions across study years"
+            title="Odgovori po godini"
+            description="Udio predanih anketa po godinama studija"
             data={data.demographics.years}
           />
         </div>
@@ -157,12 +160,12 @@ export function AnalyticsDashboard({ data }: AnalyticsDashboardProps) {
       <section className="space-y-4">
         <div>
           <h2 className="text-2xl font-semibold tracking-tight">
-            Question Breakdown
+            Analiza po pitanjima
           </h2>
           <p className="text-sm text-muted-foreground">
             {data.segment.isActive
-              ? "Question analytics for the selected segment."
-              : "Detailed analytics for each survey question."}
+              ? "Analitika pitanja za odabrani segment."
+              : "Detaljna analitika za svako pitanje u anketi."}
           </p>
         </div>
         <div className="space-y-6">

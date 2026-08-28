@@ -12,13 +12,13 @@ export default function CreateSurveyPage() {
         <Button asChild variant="ghost" className="px-0 hover:bg-transparent">
           <Link href="/admin/dashboard">
             <ChevronLeft className="h-4 w-4" />
-            Back to dashboard
+            Natrag na nadzornu ploču
           </Link>
         </Button>
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Create Survey</h1>
+          <h1 className="text-3xl font-bold tracking-tight">Izradi anketu</h1>
           <p className="mt-1 text-muted-foreground">
-            Build a new survey with dynamic questions and answer options.
+            Izradite novu anketu s dinamičkim pitanjima i opcijama odgovora.
           </p>
         </div>
       </div>

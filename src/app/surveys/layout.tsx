@@ -2,7 +2,6 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { auth, signOut } from "@/auth";
-import { Button } from "@/components/ui/button";
 
 export default async function SurveysLayout({
   children,
@@ -20,24 +19,33 @@ export default async function SurveysLayout({
   }
 
   return (
-    <div className="min-h-full bg-muted/30">
-      <header className="border-b bg-background">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
-          <div className="flex items-center gap-6">
-            <Link href="/surveys" className="text-lg font-semibold">
-              Student Surveys
-            </Link>
-            <nav className="hidden items-center gap-4 text-sm sm:flex">
-              <Link
-                href="/surveys"
-                className="text-muted-foreground transition-colors hover:text-foreground"
+    <div className="flex min-h-screen flex-col justify-between bg-[#f3f2f8] text-slate-900">
+      <header className="w-full shrink-0 bg-[#f3f2f8]">
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-6">
+          <Link href="/" className="flex items-center gap-3 transition-opacity hover:opacity-80">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-600 text-white shadow-sm">
+              <svg
+                className="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                aria-hidden
               >
-                Available Surveys
-              </Link>
-            </nav>
-          </div>
-          <div className="flex items-center gap-3">
-            <span className="hidden text-sm text-muted-foreground sm:inline">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+            </div>
+            <span className="text-xl font-bold tracking-tight text-slate-900">
+              Studentske Ankete FSRE
+            </span>
+          </Link>
+
+          <div className="flex shrink-0 items-center gap-3 sm:gap-4">
+            <span className="max-w-[140px] truncate text-sm text-slate-600 sm:max-w-[220px]">
               {session.user.email}
             </span>
             <form
@@ -46,16 +54,18 @@ export default async function SurveysLayout({
                 await signOut({ redirectTo: "/login" });
               }}
             >
-              <Button type="submit" variant="outline" size="sm">
-                Sign out
-              </Button>
+              <button
+                type="submit"
+                className="rounded-lg bg-slate-200 px-4 py-2 text-sm font-medium text-slate-800 transition-colors hover:bg-slate-300"
+              >
+                Odjava
+              </button>
             </form>
           </div>
         </div>
       </header>
-      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        {children}
-      </main>
+
+      <main className="flex-1 pb-12">{children}</main>
     </div>
   );
 }

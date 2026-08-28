@@ -15,17 +15,10 @@ import {
 } from "@/app/actions/student-surveys";
 import { RatingInput } from "@/components/survey/rating-input";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
+import { formatYearLabel } from "@/lib/i18n/hr";
 import {
   buildSurveyResponseFormSchema,
   mapFormValuesToSubmission,
@@ -35,6 +28,20 @@ import {
 type SurveyFillerFormProps = {
   survey: SurveyForFill;
 };
+
+const optionClassName =
+  "flex cursor-pointer items-center gap-3 rounded-xl border border-slate-200 bg-slate-50/50 p-3.5 transition-colors hover:border-indigo-200 hover:bg-slate-50";
+
+const textareaClassName =
+  "w-full rounded-xl border border-slate-300 bg-slate-50 p-3 text-sm text-slate-900 placeholder:text-slate-400 focus:border-indigo-600 focus:bg-white focus:ring-2 focus:ring-indigo-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-100 focus-visible:ring-offset-0";
+
+function MetadataBadge({ children }: { children: React.ReactNode }) {
+  return (
+    <span className="inline-flex items-center rounded-md bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700">
+      {children}
+    </span>
+  );
+}
 
 function getDefaultValues(survey: SurveyForFill): SurveyResponseFormValues {
   const answers: SurveyResponseFormValues["answers"] = {};
@@ -71,6 +78,21 @@ function getQuestionErrorMessage(error: unknown): string | undefined {
   }
 
   return undefined;
+}
+
+function getQuestionInstruction(type: QuestionType): string {
+  switch (type) {
+    case QuestionType.SINGLE_CHOICE:
+      return "Odaberite jednu opciju";
+    case QuestionType.MULTIPLE_CHOICE:
+      return "Odaberite sve primjenjive opcije";
+    case QuestionType.TEXT:
+      return "Unesite odgovor";
+    case QuestionType.RATING_1_5:
+      return "Ocijenite od 1 do 5 zvjezdica";
+    default:
+      return "";
+  }
 }
 
 export function SurveyFillerForm({ survey }: SurveyFillerFormProps) {
@@ -127,31 +149,31 @@ export function SurveyFillerForm({ survey }: SurveyFillerFormProps) {
 
   if (isSuccess) {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle>Submission received</CardTitle>
-          <CardDescription>
-            Thank you for completing &quot;{survey.title}&quot;. Redirecting
-            you back to your survey list...
-          </CardDescription>
-        </CardHeader>
-      </Card>
+      <div className="rounded-2xl border border-slate-200/80 bg-white p-8 shadow-sm">
+        <h2 className="mb-2 text-2xl font-bold text-slate-900">Odgovor je primljen</h2>
+        <p className="text-sm text-slate-600">
+          Hvala što ste ispunili anketu „{survey.title}". Preusmjeravamo vas natrag
+          na popis anketa...
+        </p>
+      </div>
     );
   }
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-      <Card>
-        <CardHeader>
-          <CardTitle>{survey.title}</CardTitle>
-          <CardDescription>{survey.description}</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-2 text-sm text-muted-foreground">
-          {survey.subject && <p>Subject: {survey.subject}</p>}
-          {survey.targetProgram && <p>Program: {survey.targetProgram}</p>}
-          {survey.targetYear && <p>Target year: {survey.targetYear}</p>}
-        </CardContent>
-      </Card>
+      <div className="rounded-2xl border border-slate-200/80 bg-white p-8 shadow-sm">
+        <h1 className="mb-2 text-2xl font-bold text-slate-900">{survey.title}</h1>
+        <p className="mb-4 text-sm text-slate-600">{survey.description}</p>
+        <div className="flex flex-wrap gap-2">
+          {survey.subject && <MetadataBadge>Predmet: {survey.subject}</MetadataBadge>}
+          {survey.targetProgram && (
+            <MetadataBadge>Smjer: {survey.targetProgram}</MetadataBadge>
+          )}
+          {survey.targetYear && (
+            <MetadataBadge>{formatYearLabel(survey.targetYear)}</MetadataBadge>
+          )}
+        </div>
+      </div>
 
       {survey.questions.map((question, index) => {
         const questionError = getQuestionErrorMessage(
@@ -159,25 +181,25 @@ export function SurveyFillerForm({ survey }: SurveyFillerFormProps) {
         );
 
         return (
-          <Card key={question.id}>
-            <CardHeader>
-              <CardTitle className="text-lg">
-                {index + 1}. {question.text}
+          <div
+            key={question.id}
+            className="space-y-4 rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm"
+          >
+            <div>
+              <p className="flex items-center gap-1 text-base font-semibold text-slate-900">
+                <span>
+                  {index + 1}. {question.text}
+                </span>
                 {question.isRequired && (
-                  <span className="ml-1 text-destructive">*</span>
+                  <span className="text-rose-500">*</span>
                 )}
-              </CardTitle>
-              <CardDescription>
-                {question.type === QuestionType.SINGLE_CHOICE &&
-                  "Select one option"}
-                {question.type === QuestionType.MULTIPLE_CHOICE &&
-                  "Select all that apply"}
-                {question.type === QuestionType.TEXT && "Enter your answer"}
-                {question.type === QuestionType.RATING_1_5 &&
-                  "Rate from 1 to 5 stars"}
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-3">
+              </p>
+              <p className="mt-1 text-xs font-normal text-slate-500">
+                {getQuestionInstruction(question.type)}
+              </p>
+            </div>
+
+            <div className="space-y-3">
               {question.type === QuestionType.SINGLE_CHOICE && (
                 <Controller
                   control={control}
@@ -191,13 +213,16 @@ export function SurveyFillerForm({ survey }: SurveyFillerFormProps) {
                       {question.options.map((option) => (
                         <label
                           key={option.id}
-                          className="flex items-center gap-3 rounded-md border p-3 hover:bg-accent/50"
+                          htmlFor={`${question.id}-${option.id}`}
+                          className={optionClassName}
                         >
                           <RadioGroupItem
                             value={option.id}
                             id={`${question.id}-${option.id}`}
                           />
-                          <span className="text-sm">{option.text}</span>
+                          <span className="text-sm font-medium text-slate-800">
+                            {option.text}
+                          </span>
                         </label>
                       ))}
                     </RadioGroup>
@@ -220,16 +245,15 @@ export function SurveyFillerForm({ survey }: SurveyFillerFormProps) {
                           return (
                             <label
                               key={option.id}
-                              className="flex items-center gap-3 rounded-md border p-3 hover:bg-accent/50"
+                              htmlFor={`${question.id}-${option.id}`}
+                              className={optionClassName}
                             >
                               <Checkbox
+                                id={`${question.id}-${option.id}`}
                                 checked={checked}
                                 onCheckedChange={(isChecked) => {
                                   if (isChecked) {
-                                    field.onChange([
-                                      ...selectedValues,
-                                      option.id,
-                                    ]);
+                                    field.onChange([...selectedValues, option.id]);
                                   } else {
                                     field.onChange(
                                       selectedValues.filter(
@@ -239,7 +263,9 @@ export function SurveyFillerForm({ survey }: SurveyFillerFormProps) {
                                   }
                                 }}
                               />
-                              <span className="text-sm">{option.text}</span>
+                              <span className="text-sm font-medium text-slate-800">
+                                {option.text}
+                              </span>
                             </label>
                           );
                         })}
@@ -257,7 +283,8 @@ export function SurveyFillerForm({ survey }: SurveyFillerFormProps) {
                     <Textarea
                       {...field}
                       rows={4}
-                      placeholder="Type your answer here..."
+                      placeholder="Upišite odgovor ovdje..."
+                      className={textareaClassName}
                     />
                   )}
                 />
@@ -268,10 +295,7 @@ export function SurveyFillerForm({ survey }: SurveyFillerFormProps) {
                   control={control}
                   name={`answers.${question.id}.ratingValue`}
                   render={({ field }) => (
-                    <RatingInput
-                      value={field.value}
-                      onChange={field.onChange}
-                    />
+                    <RatingInput value={field.value} onChange={field.onChange} />
                   )}
                 />
               )}
@@ -281,21 +305,26 @@ export function SurveyFillerForm({ survey }: SurveyFillerFormProps) {
                   <AlertDescription>{questionError}</AlertDescription>
                 </Alert>
               )}
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         );
       })}
 
-      <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-between">
-        <Button asChild variant="outline" type="button">
-          <Link href="/surveys">
-            <ChevronLeft className="h-4 w-4" />
-            Back to surveys
-          </Link>
-        </Button>
-        <Button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? "Submitting..." : "Submit survey"}
-        </Button>
+      <div className="flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <Link
+          href="/surveys"
+          className="inline-flex items-center justify-center gap-1 rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50"
+        >
+          <ChevronLeft className="h-4 w-4" />
+          Natrag na ankete
+        </Link>
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className="rounded-xl bg-[#5c4eb4] px-8 py-3.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-[#4c3ea4] disabled:cursor-not-allowed disabled:opacity-60"
+        >
+          {isSubmitting ? "Slanje..." : "Predaj anketu"}
+        </button>
       </div>
     </form>
   );

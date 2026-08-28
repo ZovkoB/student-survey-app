@@ -42,7 +42,7 @@ export function ExportCsvButton({ surveyId }: ExportCsvButtonProps) {
           const errorBody = (await response.json().catch(() => null)) as {
             error?: string;
           } | null;
-          toast.error(errorBody?.error ?? "Failed to export CSV.");
+          toast.error(errorBody?.error ?? "Izvoz u CSV nije uspio.");
           return;
         }
 
@@ -52,7 +52,7 @@ export function ExportCsvButton({ surveyId }: ExportCsvButtonProps) {
         const filename =
           parseContentDispositionFilename(
             response.headers.get("Content-Disposition"),
-          ) ?? "survey-responses.csv";
+          ) ?? "odgovori-ankete.csv";
 
         const blob = new Blob([arrayBuffer], { type: contentType });
         const url = URL.createObjectURL(blob);
@@ -64,9 +64,9 @@ export function ExportCsvButton({ surveyId }: ExportCsvButtonProps) {
         document.body.removeChild(link);
         URL.revokeObjectURL(url);
 
-        toast.success("CSV export downloaded successfully.");
+        toast.success("CSV izvoz je uspješno preuzet.");
       } catch {
-        toast.error("Failed to export CSV.");
+        toast.error("Izvoz u CSV nije uspio.");
       }
     });
   }
@@ -76,9 +76,10 @@ export function ExportCsvButton({ surveyId }: ExportCsvButtonProps) {
       variant="outline"
       onClick={handleExport}
       disabled={isPending}
+      className="shadow-sm"
     >
       <Download className="h-4 w-4" />
-      {isPending ? "Exporting..." : "Export CSV"}
+      {isPending ? "Izvoz..." : "Izvezi u CSV"}
     </Button>
   );
 }

@@ -21,19 +21,17 @@ export function RatingInput({ value, onChange, disabled }: RatingInputProps) {
             key={rating}
             type="button"
             disabled={disabled}
-            aria-label={`Rate ${rating} out of 5`}
+            aria-label={`Ocjena ${rating} od 5`}
             onClick={() => onChange(rating)}
             className={cn(
-              "inline-flex h-10 w-10 items-center justify-center rounded-md border transition-colors",
-              isSelected
-                ? "border-primary bg-primary/10 text-primary"
-                : "border-input bg-background text-muted-foreground hover:bg-accent hover:text-accent-foreground",
+              "inline-flex h-10 w-10 items-center justify-center rounded-md transition-colors",
+              isSelected ? "text-amber-400" : "text-slate-300 hover:text-amber-400",
               disabled && "cursor-not-allowed opacity-50",
             )}
           >
             <Star
               className={cn(
-                "h-5 w-5",
+                "h-6 w-6",
                 isSelected ? "fill-current" : "fill-none",
               )}
             />
@@ -41,7 +39,7 @@ export function RatingInput({ value, onChange, disabled }: RatingInputProps) {
         );
       })}
       {value !== undefined && (
-        <span className="text-sm text-muted-foreground">{value} / 5</span>
+        <span className="text-sm font-medium text-slate-600">{value} / 5</span>
       )}
     </div>
   );

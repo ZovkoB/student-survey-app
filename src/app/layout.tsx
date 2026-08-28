@@ -15,14 +15,15 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Student Survey App",
-  description: "Student surveys and data analysis platform",
+  title: "FSRE Ankete | Sustav za studentske ankete",
+  description:
+    "Platforma za anonimne studentske ankete, analitiku u stvarnom vremenu i poboljšanje kvalitete nastave na FSRE-u.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
-      lang="en"
+      lang="hr"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">

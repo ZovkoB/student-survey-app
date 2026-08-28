@@ -15,7 +15,7 @@ export function AnalyticsSegmentFiltersBar({
     <Suspense
       fallback={
         <div className="rounded-lg border bg-background p-4 text-sm text-muted-foreground">
-          Loading filters...
+          Učitavanje filtera...
         </div>
       }
     >

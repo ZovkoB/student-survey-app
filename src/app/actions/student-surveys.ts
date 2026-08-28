@@ -61,11 +61,11 @@ async function requireStudentSession() {
   const session = await auth();
 
   if (!session?.user?.id) {
-    return { error: "You must be signed in to access surveys." as const };
+    return { error: "Morate biti prijavljeni za pristup anketama." as const };
   }
 
   if (session.user.role !== "STUDENT") {
-    return { error: "Only students can participate in surveys." as const };
+    return { error: "Samo studenti mogu sudjelovati u anketama." as const };
   }
 
   return { session } as const;
@@ -157,7 +157,7 @@ export async function getAvailableSurveys(): Promise<
   const student = await getStudentProfile(authResult.session.user.id);
 
   if (!student) {
-    return { success: false, message: "Student profile not found." };
+    return { success: false, message: "Studentski profil nije pronađen." };
   }
 
   const surveys = await prisma.survey.findMany({
@@ -179,7 +179,7 @@ export async function getAvailableSurveys(): Promise<
 
   return {
     success: true,
-    message: "Available surveys loaded successfully.",
+    message: "Dostupne ankete su uspješno učitane.",
     data: surveys.map((survey) => mapSurveyListItem(survey)),
   };
 }
@@ -209,7 +209,7 @@ export async function getCompletedSurveys(): Promise<
 
   return {
     success: true,
-    message: "Completed surveys loaded successfully.",
+    message: "Ispunjene ankete su uspješno učitane.",
     data: responses.map((response) =>
       mapSurveyListItem(response.survey, response.submittedAt),
     ) as CompletedSurveyListItem[],
@@ -228,7 +228,7 @@ export async function getSurveyById(
   const student = await getStudentProfile(authResult.session.user.id);
 
   if (!student) {
-    return { success: false, message: "Student profile not found." };
+    return { success: false, message: "Studentski profil nije pronađen." };
   }
 
   const existingResponse = await prisma.response.findUnique({
@@ -243,7 +243,7 @@ export async function getSurveyById(
   if (existingResponse) {
     return {
       success: false,
-      message: "You have already completed this survey.",
+      message: "Već ste ispunili ovu anketu.",
     };
   }
 
@@ -267,13 +267,13 @@ export async function getSurveyById(
   if (!survey) {
     return {
       success: false,
-      message: "Survey not found or not available for your profile.",
+      message: "Anketa nije pronađena ili nije dostupna za vaš profil.",
     };
   }
 
   return {
     success: true,
-    message: "Survey loaded successfully.",
+    message: "Anketa je uspješno učitana.",
     data: {
       id: survey.id,
       title: survey.title,
@@ -311,21 +311,21 @@ export async function submitSurveyResponse(
   if (!parsed.success) {
     return {
       success: false,
-      message: parsed.error.issues[0]?.message ?? "Invalid survey submission.",
+      message: parsed.error.issues[0]?.message ?? "Podaci ankete nisu valjani.",
     };
   }
 
   const student = await getStudentProfile(authResult.session.user.id);
 
   if (!student) {
-    return { success: false, message: "Student profile not found." };
+    return { success: false, message: "Studentski profil nije pronađen." };
   }
 
   if (!student.studyProgram || student.yearOfStudy === null) {
     return {
       success: false,
       message:
-        "Your profile is missing study program or year of study. Please contact support.",
+        "Vašem profilu nedostaje studijski smjer ili godina studija. Obratite se podršci.",
     };
   }
 
@@ -335,7 +335,7 @@ export async function submitSurveyResponse(
     return {
       success: false,
       message:
-        "Your profile is missing a valid study program. Please contact support.",
+        "Vašem profilu nedostaje valjan studijski smjer. Obratite se podršci.",
     };
   }
 
@@ -356,7 +356,7 @@ export async function submitSurveyResponse(
   if (!survey) {
     return {
       success: false,
-      message: "Survey not found or not available for your profile.",
+      message: "Anketa nije pronađena ili nije dostupna za vaš profil.",
     };
   }
 
@@ -375,7 +375,7 @@ export async function submitSurveyResponse(
       success: false,
       message:
         validationResult.error.issues[0]?.message ??
-        "Please complete all required questions.",
+        "Ispunite sva obavezna pitanja.",
     };
   }
 
@@ -387,7 +387,7 @@ export async function submitSurveyResponse(
     if (!submittedQuestionIds.has(question.id)) {
       return {
         success: false,
-        message: "Please answer every question in the survey.",
+        message: "Odgovorite na sva pitanja u anketi.",
       };
     }
   }
@@ -430,14 +430,14 @@ export async function submitSurveyResponse(
 
     return {
       success: true,
-      message: "Survey submitted successfully. Thank you for your feedback!",
+      message: "Anketa je uspješno poslana. Hvala na povratnim informacijama!",
       data: { responseId: response.id },
     };
   } catch (error) {
     if (error instanceof Error && error.message === "DUPLICATE_SUBMISSION") {
       return {
         success: false,
-        message: "You have already submitted this survey.",
+        message: "Već ste poslali ovu anketu.",
       };
     }
 
@@ -447,13 +447,13 @@ export async function submitSurveyResponse(
     ) {
       return {
         success: false,
-        message: "You have already submitted this survey.",
+        message: "Već ste poslali ovu anketu.",
       };
     }
 
     return {
       success: false,
-      message: "Something went wrong while submitting your survey.",
+      message: "Došlo je do greške pri slanju ankete.",
     };
   }
 }

@@ -6,9 +6,9 @@ export default function LoginPage() {
   return (
     <Suspense
       fallback={
-        <main className="flex flex-1 items-center justify-center px-4 py-12">
-          <p className="text-sm text-muted-foreground">Loading...</p>
-        </main>
+        <div className="w-full max-w-md text-center">
+          <p className="text-sm text-slate-600">Učitavanje...</p>
+        </div>
       }
     >
       <LoginForm />

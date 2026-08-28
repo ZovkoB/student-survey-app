@@ -3,7 +3,6 @@
 import { Prisma } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 
-import { auth } from "@/auth";
 import { getAdminSurveyWhere, requireAdminUser } from "@/lib/auth/admin";
 import { prisma } from "@/lib/prisma";
 import { normalizeStudyProgram } from "@/lib/study-program";
@@ -71,7 +70,7 @@ export async function getAdminSurveys(): Promise<
 
   return {
     success: true,
-    message: "Surveys loaded successfully.",
+    message: "Ankete su uspješno učitane.",
     data: surveys.map((survey) => ({
       id: survey.id,
       title: survey.title,
@@ -101,7 +100,7 @@ export async function createSurvey(
   if (!parsed.success) {
     return {
       success: false,
-      message: parsed.error.issues[0]?.message ?? "Invalid survey data.",
+      message: parsed.error.issues[0]?.message ?? "Podaci ankete nisu valjani.",
     };
   }
 
@@ -154,7 +153,7 @@ export async function createSurvey(
 
     return {
       success: true,
-      message: "Survey created successfully.",
+      message: "Anketa je uspješno kreirana.",
       data: {
         id: survey.id,
         title: survey.title,
@@ -164,13 +163,13 @@ export async function createSurvey(
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       return {
         success: false,
-        message: "Failed to create survey due to a database error.",
+        message: "Kreiranje ankete nije uspjelo zbog greške baze podataka.",
       };
     }
 
     return {
       success: false,
-      message: "Something went wrong while creating the survey.",
+      message: "Došlo je do greške pri kreiranju ankete.",
     };
   }
 }
@@ -191,7 +190,7 @@ export async function toggleSurveyStatus(
   );
 
   if (!survey) {
-    return { success: false, message: "Survey not found." };
+    return { success: false, message: "Anketa nije pronađena." };
   }
 
   try {
@@ -205,14 +204,14 @@ export async function toggleSurveyStatus(
     return {
       success: true,
       message: updatedSurvey.isActive
-        ? "Survey activated successfully."
-        : "Survey deactivated successfully.",
+        ? "Anketa je uspješno aktivirana."
+        : "Anketa je uspješno deaktivirana.",
       data: { isActive: updatedSurvey.isActive },
     };
   } catch {
     return {
       success: false,
-      message: "Failed to update survey status.",
+      message: "Ažuriranje statusa ankete nije uspjelo.",
     };
   }
 }
@@ -233,7 +232,7 @@ export async function deleteSurvey(
   );
 
   if (!survey) {
-    return { success: false, message: "Survey not found." };
+    return { success: false, message: "Anketa nije pronađena." };
   }
 
   try {
@@ -245,12 +244,12 @@ export async function deleteSurvey(
 
     return {
       success: true,
-      message: "Survey deleted successfully.",
+      message: "Anketa je uspješno obrisana.",
     };
   } catch {
     return {
       success: false,
-      message: "Failed to delete survey.",
+      message: "Brisanje ankete nije uspjelo.",
     };
   }
 }

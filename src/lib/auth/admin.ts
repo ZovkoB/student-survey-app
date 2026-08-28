@@ -9,11 +9,11 @@ export async function requireAdminUser() {
   const session = await auth();
 
   if (!session?.user?.email) {
-    return { error: "You must be signed in to perform this action." as const };
+    return { error: "Morate biti prijavljeni za ovu radnju." as const };
   }
 
   if (session.user.role !== "ADMIN") {
-    return { error: "Only administrators can manage surveys." as const };
+    return { error: "Samo administratori mogu upravljati anketama." as const };
   }
 
   const admin = await prisma.user.findUnique({
@@ -21,7 +21,7 @@ export async function requireAdminUser() {
   });
 
   if (!admin || admin.role !== Role.ADMIN) {
-    return { error: "Admin account not found." as const };
+    return { error: "Administratorski račun nije pronađen." as const };
   }
 
   return { admin, session } as const;

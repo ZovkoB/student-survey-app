@@ -21,17 +21,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { formatDateTime, formatYearLabel } from "@/lib/i18n/hr";
 
 type SurveyTableProps = {
   surveys: AdminSurveyListItem[];
 };
-
-function formatDate(value: string) {
-  return new Intl.DateTimeFormat("en-US", {
-    dateStyle: "medium",
-    timeStyle: "short",
-  }).format(new Date(value));
-}
 
 export function SurveyTable({ surveys }: SurveyTableProps) {
   const router = useRouter();
@@ -53,7 +47,7 @@ export function SurveyTable({ surveys }: SurveyTableProps) {
 
   function handleDelete(survey: AdminSurveyListItem) {
     const confirmed = window.confirm(
-      `Delete "${survey.title}"? This will permanently remove all questions, options, and responses.`,
+      `Obrisati anketu „${survey.title}"? Time će se trajno ukloniti sva pitanja, opcije i odgovori.`,
     );
 
     if (!confirmed) {
@@ -75,34 +69,35 @@ export function SurveyTable({ surveys }: SurveyTableProps) {
 
   if (surveys.length === 0) {
     return (
-      <div className="rounded-lg border border-dashed bg-background p-10 text-center">
-        <h3 className="text-lg font-medium">No surveys yet</h3>
+      <div className="rounded-xl border border-dashed bg-background p-10 text-center shadow-sm">
+        <h3 className="text-lg font-medium">Još nema anketa</h3>
         <p className="mt-2 text-sm text-muted-foreground">
-          Create your first survey to start collecting student feedback.
+          Izradite prvu anketu kako biste počeli prikupljati studentske povratne
+          informacije.
         </p>
         <Button asChild className="mt-6">
-          <Link href="/admin/surveys/create">Create Survey</Link>
+          <Link href="/admin/surveys/create">Izradi anketu</Link>
         </Button>
       </div>
     );
   }
 
   return (
-    <div className="rounded-lg border bg-background">
+    <div className="overflow-hidden rounded-xl border bg-background shadow-sm">
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Survey</TableHead>
+            <TableHead>Anketa</TableHead>
             <TableHead>Status</TableHead>
-            <TableHead>Questions</TableHead>
-            <TableHead>Responses</TableHead>
-            <TableHead>Created</TableHead>
-            <TableHead className="text-right">Actions</TableHead>
+            <TableHead>Pitanja</TableHead>
+            <TableHead>Odgovori</TableHead>
+            <TableHead>Kreirano</TableHead>
+            <TableHead className="text-right">Radnje</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {surveys.map((survey) => (
-            <TableRow key={survey.id}>
+            <TableRow key={survey.id} className="transition-colors hover:bg-muted/40">
               <TableCell>
                 <div className="space-y-1">
                   <p className="font-medium">{survey.title}</p>
@@ -111,7 +106,11 @@ export function SurveyTable({ surveys }: SurveyTableProps) {
                   </p>
                   {(survey.subject || survey.targetProgram || survey.targetYear) && (
                     <p className="text-xs text-muted-foreground">
-                      {[survey.subject, survey.targetProgram, survey.targetYear && `Year ${survey.targetYear}`]
+                      {[
+                        survey.subject,
+                        survey.targetProgram,
+                        survey.targetYear && formatYearLabel(survey.targetYear),
+                      ]
                         .filter(Boolean)
                         .join(" · ")}
                     </p>
@@ -120,18 +119,18 @@ export function SurveyTable({ surveys }: SurveyTableProps) {
               </TableCell>
               <TableCell>
                 <Badge variant={survey.isActive ? "success" : "muted"}>
-                  {survey.isActive ? "Active" : "Inactive"}
+                  {survey.isActive ? "Aktivno" : "Neaktivno"}
                 </Badge>
               </TableCell>
               <TableCell>{survey.questionCount}</TableCell>
               <TableCell>{survey.responseCount}</TableCell>
-              <TableCell>{formatDate(survey.createdAt)}</TableCell>
+              <TableCell>{formatDateTime(survey.createdAt)}</TableCell>
               <TableCell>
                 <div className="flex justify-end gap-2">
                   <Button asChild variant="outline" size="sm">
                     <Link href={`/admin/surveys/${survey.id}/analytics`}>
                       <BarChart3 className="h-4 w-4" />
-                      Analytics
+                      Analitika
                     </Link>
                   </Button>
                   <Button
@@ -141,7 +140,7 @@ export function SurveyTable({ surveys }: SurveyTableProps) {
                     onClick={() => handleToggleStatus(survey)}
                   >
                     <Power className="h-4 w-4" />
-                    {survey.isActive ? "Deactivate" : "Activate"}
+                    {survey.isActive ? "Deaktiviraj" : "Aktiviraj"}
                   </Button>
                   <Button
                     variant="destructive"
@@ -150,7 +149,7 @@ export function SurveyTable({ surveys }: SurveyTableProps) {
                     onClick={() => handleDelete(survey)}
                   >
                     <Trash2 className="h-4 w-4" />
-                    Delete
+                    Obriši
                   </Button>
                 </div>
               </TableCell>

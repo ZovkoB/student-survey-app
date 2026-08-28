@@ -8,6 +8,7 @@ import {
   isAnalyticsSegmentActive,
 } from "@/lib/analytics/filters";
 import { prisma } from "@/lib/prisma";
+import { formatYearLabel } from "@/lib/i18n/hr";
 import {
   normalizeStudyProgram,
   UTF8_BOM,
@@ -149,7 +150,7 @@ async function requireAdminOwner(surveyId: string) {
   });
 
   if (!survey) {
-    return { error: "Survey not found or you do not have access." as const };
+    return { error: "Anketa nije pronađena ili nemate pristup." as const };
   }
 
   return { survey, admin: authResult.admin } as const;
@@ -202,12 +203,12 @@ function buildDemographics(
     .sort((a, b) => b.count - a.count);
 
   const years = Array.from(yearCounts.entries())
+    .sort(([yearA], [yearB]) => yearA - yearB)
     .map(([year, count]) => ({
-      label: `Year ${year}`,
+      label: formatYearLabel(year),
       count,
       percentage: totalResponses > 0 ? (count / totalResponses) * 100 : 0,
-    }))
-    .sort((a, b) => Number(a.label.replace("Year ", "")) - Number(b.label.replace("Year ", "")));
+    }));
 
   return { programs, years };
 }
@@ -254,7 +255,7 @@ function buildSegmentLabel(filters: AnalyticsSegmentFilters) {
   }
 
   if (filters.year !== null) {
-    parts.push(`Year ${filters.year}`);
+    parts.push(formatYearLabel(filters.year));
   }
 
   return parts.length > 0 ? parts.join(" · ") : null;
@@ -436,7 +437,7 @@ export async function getSurveyAnalytics(
 
   return {
     success: true,
-    message: "Analytics loaded successfully.",
+    message: "Analitika je uspješno učitana.",
     data: {
       survey: {
         id: survey.id,
@@ -551,10 +552,10 @@ export async function exportSurveyDataCsv(
   const { survey } = authResult;
 
   const headers = [
-    "Response ID",
-    "Submitted At",
-    "Student Program",
-    "Student Year",
+    "ID odgovora",
+    "Vrijeme slanja",
+    "Studijski smjer",
+    "Godina studija",
     ...survey.questions.map((question) => question.text),
   ];
 
@@ -591,7 +592,7 @@ export async function exportSurveyDataCsv(
 
   return {
     success: true,
-    message: "CSV export generated successfully.",
+    message: "CSV izvoz je uspješno generiran.",
     data: {
       csvBuffer,
       safeFilename,

@@ -4,13 +4,13 @@ import { z } from "zod";
 export const questionTypeSchema = z.nativeEnum(QuestionType);
 
 export const questionOptionSchema = z.object({
-  text: z.string().trim().min(1, "Option text is required"),
+  text: z.string().trim().min(1, "Tekst opcije je obavezan"),
   order: z.number().int().min(0),
 });
 
 export const questionSchema = z
   .object({
-    text: z.string().trim().min(1, "Question text is required"),
+    text: z.string().trim().min(1, "Tekst pitanja je obavezan"),
     type: questionTypeSchema,
     isRequired: z.boolean(),
     order: z.number().int().min(0),
@@ -25,7 +25,7 @@ export const questionSchema = z
       if (!question.options || question.options.length < 2) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
-          message: "Choice questions require at least 2 options",
+          message: "Pitanja s izborom moraju imati najmanje 2 opcije",
           path: ["options"],
         });
       }
@@ -36,9 +36,9 @@ export const createSurveySchema = z.object({
   title: z
     .string()
     .trim()
-    .min(1, "Title is required")
-    .max(200, "Title must be 200 characters or fewer"),
-  description: z.string().trim().min(1, "Description is required"),
+    .min(1, "Naslov je obavezan")
+    .max(200, "Naslov smije imati najviše 200 znakova"),
+  description: z.string().trim().min(1, "Opis je obavezan"),
   subject: z.string().trim().optional(),
   targetProgram: z.string().trim().optional(),
   targetYear: z.preprocess(
@@ -49,13 +49,13 @@ export const createSurveySchema = z.object({
     z
       .number()
       .int()
-      .min(1, "Target year must be between 1 and 6")
-      .max(6, "Target year must be between 1 and 6")
+      .min(1, "Ciljana godina mora biti između 1 i 6")
+      .max(6, "Ciljana godina mora biti između 1 i 6")
       .optional(),
   ),
   questions: z
     .array(questionSchema)
-    .min(1, "Add at least one question"),
+    .min(1, "Dodajte barem jedno pitanje"),
 });
 
 export type CreateSurveyInput = z.infer<typeof createSurveySchema>;
@@ -63,8 +63,8 @@ export type SurveyQuestionInput = z.infer<typeof questionSchema>;
 export type SurveyQuestionOptionInput = z.infer<typeof questionOptionSchema>;
 
 export const QUESTION_TYPE_OPTIONS = [
-  { value: QuestionType.SINGLE_CHOICE, label: "Single choice" },
-  { value: QuestionType.MULTIPLE_CHOICE, label: "Multiple choice" },
-  { value: QuestionType.TEXT, label: "Free text" },
-  { value: QuestionType.RATING_1_5, label: "Rating (1–5)" },
+  { value: QuestionType.SINGLE_CHOICE, label: "Jedan izbor" },
+  { value: QuestionType.MULTIPLE_CHOICE, label: "Više izbora" },
+  { value: QuestionType.TEXT, label: "Slobodan tekst" },
+  { value: QuestionType.RATING_1_5, label: "Ocjena (1–5)" },
 ] as const;

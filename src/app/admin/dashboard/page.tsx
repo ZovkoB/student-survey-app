@@ -22,15 +22,16 @@ export default async function AdminDashboardPage() {
     <div className="space-y-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Survey Dashboard</h1>
+          <h1 className="text-3xl font-bold tracking-tight">Nadzorna ploča</h1>
           <p className="mt-1 text-muted-foreground">
-            Manage surveys, monitor status, and review collected responses.
+            Upravljajte anketama, pratite status i pregledajte prikupljene
+            odgovore.
           </p>
         </div>
         <Button asChild>
           <Link href="/admin/surveys/create">
             <Plus className="h-4 w-4" />
-            Create Survey
+            Izradi anketu
           </Link>
         </Button>
       </div>

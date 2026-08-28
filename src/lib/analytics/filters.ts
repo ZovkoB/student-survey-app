@@ -1,19 +1,20 @@
+import { formatYearLabel } from "@/lib/i18n/hr";
 import { normalizeStudyProgram } from "@/lib/study-program";
 
 export const ANALYTICS_PROGRAM_OPTIONS = [
-  { value: "all", label: "All Programs" },
+  { value: "all", label: "Svi smjerovi" },
   { value: "Računarstvo", label: "Računarstvo" },
   { value: "Strojarstvo", label: "Strojarstvo" },
   { value: "Elektrotehnika", label: "Elektrotehnika" },
 ] as const;
 
 export const ANALYTICS_YEAR_OPTIONS = [
-  { value: "all", label: "All Years" },
-  { value: "1", label: "Year 1" },
-  { value: "2", label: "Year 2" },
-  { value: "3", label: "Year 3" },
-  { value: "4", label: "Year 4" },
-  { value: "5", label: "Year 5" },
+  { value: "all", label: "Sve godine" },
+  { value: "1", label: "1. godina" },
+  { value: "2", label: "2. godina" },
+  { value: "3", label: "3. godina" },
+  { value: "4", label: "4. godina" },
+  { value: "5", label: "5. godina" },
 ] as const;
 
 export type AnalyticsSegmentFilters = {
@@ -66,7 +67,7 @@ export function formatAnalyticsSegmentLabel(filters: AnalyticsSegmentFilters) {
   }
 
   if (filters.year !== null) {
-    parts.push(`Year ${filters.year}`);
+    parts.push(formatYearLabel(filters.year));
   }
 
   return parts.join(" · ");

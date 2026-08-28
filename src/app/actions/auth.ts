@@ -38,7 +38,6 @@ export async function registerUser(
     email: formData.get("email"),
     password: formData.get("password"),
     confirmPassword: formData.get("confirmPassword"),
-    role: formData.get("role"),
     studyProgram: formData.get("studyProgram") || undefined,
     yearOfStudy: formData.get("yearOfStudy") || undefined,
   };
@@ -48,12 +47,12 @@ export async function registerUser(
   if (!parsed.success) {
     return {
       success: false,
-      message: "Please fix the errors below and try again.",
+      message: "Ispravite greške u obrascu i pokušajte ponovno.",
       fieldErrors: formatZodErrors(parsed.error),
     };
   }
 
-  const { email, password, role, studyProgram, yearOfStudy } = parsed.data;
+  const { email, password, studyProgram, yearOfStudy } = parsed.data;
   const normalizedEmail = email.toLowerCase();
 
   const existingUser = await prisma.user.findUnique({
@@ -63,9 +62,9 @@ export async function registerUser(
   if (existingUser) {
     return {
       success: false,
-      message: "An account with this email already exists.",
+      message: "Račun s ovom e-poštom već postoji.",
       fieldErrors: {
-        email: ["An account with this email already exists."],
+        email: ["Račun s ovom e-poštom već postoji."],
       },
     };
   }
@@ -77,12 +76,9 @@ export async function registerUser(
       data: {
         email: normalizedEmail,
         passwordHash,
-        role,
-        studyProgram:
-          role === "STUDENT"
-            ? normalizeStudyProgram(studyProgram)
-            : null,
-        yearOfStudy: role === "STUDENT" ? yearOfStudy : null,
+        role: "STUDENT",
+        studyProgram: normalizeStudyProgram(studyProgram),
+        yearOfStudy,
       },
     });
   } catch (error) {
@@ -92,21 +88,21 @@ export async function registerUser(
     ) {
       return {
         success: false,
-        message: "An account with this email already exists.",
+        message: "Račun s ovom e-poštom već postoji.",
         fieldErrors: {
-          email: ["An account with this email already exists."],
+          email: ["Račun s ovom e-poštom već postoji."],
         },
       };
     }
 
     return {
       success: false,
-      message: "Something went wrong while creating your account. Please try again.",
+      message: "Došlo je do greške pri kreiranju računa. Pokušajte ponovno.",
     };
   }
 
   return {
     success: true,
-    message: "Account created successfully. You can now sign in.",
+    message: "Račun je uspješno kreiran. Sada se možete prijaviti.",
   };
 }

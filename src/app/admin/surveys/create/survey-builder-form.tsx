@@ -73,12 +73,12 @@ function QuestionOptionsEditor({
 
   return (
     <div className="space-y-3">
-      <Label>Answer options</Label>
+      <Label>Opcije odgovora</Label>
       {fields.map((field, optionIndex) => (
         <div key={field.id} className="flex items-start gap-2">
           <Input
             {...register(`questions.${questionIndex}.options.${optionIndex}.text`)}
-            placeholder={`Option ${optionIndex + 1}`}
+            placeholder={`Opcija ${optionIndex + 1}`}
           />
           <Button
             type="button"
@@ -113,7 +113,7 @@ function QuestionOptionsEditor({
         }
       >
         <Plus className="h-4 w-4" />
-        Add option
+        Dodaj opciju
       </Button>
     </div>
   );
@@ -152,10 +152,10 @@ function QuestionCard({
         <div className="space-y-1">
           <CardTitle className="flex items-center gap-2 text-lg">
             <GripVertical className="h-4 w-4 text-muted-foreground" />
-            Question {questionIndex + 1}
+            Pitanje {questionIndex + 1}
           </CardTitle>
           <CardDescription>
-            Configure the question text, type, and answer choices.
+            Postavite tekst pitanja, vrstu i opcije odgovora.
           </CardDescription>
         </div>
         <Button
@@ -166,16 +166,16 @@ function QuestionCard({
           onClick={() => removeQuestion(questionIndex)}
         >
           <Trash2 className="h-4 w-4" />
-          Remove
+          Ukloni
         </Button>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="space-y-2">
-          <Label htmlFor={`question-text-${questionIndex}`}>Question text</Label>
+          <Label htmlFor={`question-text-${questionIndex}`}>Tekst pitanja</Label>
           <Input
             id={`question-text-${questionIndex}`}
             {...register(`questions.${questionIndex}.text`)}
-            placeholder="Enter your question"
+            placeholder="Unesite pitanje"
           />
           {errors.questions?.[questionIndex]?.text && (
             <p className="text-sm text-destructive">
@@ -186,7 +186,7 @@ function QuestionCard({
 
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-2">
-            <Label>Question type</Label>
+            <Label>Vrsta pitanja</Label>
             <Select
               value={questionType}
               onValueChange={(value: QuestionType) => {
@@ -205,7 +205,7 @@ function QuestionCard({
               }}
             >
               <SelectTrigger>
-                <SelectValue placeholder="Select type" />
+                <SelectValue placeholder="Odaberite vrstu" />
               </SelectTrigger>
               <SelectContent>
                 {QUESTION_TYPE_OPTIONS.map((option) => (
@@ -229,7 +229,7 @@ function QuestionCard({
                   )
                 }
               />
-              Required question
+              Obavezno pitanje
             </label>
           </div>
         </div>
@@ -245,13 +245,13 @@ function QuestionCard({
 
         {questionType === QuestionType.RATING_1_5 && (
           <p className="text-sm text-muted-foreground">
-            Students will rate this question on a scale from 1 to 5.
+            Studenti će ocijeniti ovo pitanje na ljestvici od 1 do 5.
           </p>
         )}
 
         {questionType === QuestionType.TEXT && (
           <p className="text-sm text-muted-foreground">
-            Students will provide a free-text answer for this question.
+            Studenti će dati slobodan tekstualni odgovor na ovo pitanje.
           </p>
         )}
       </CardContent>
@@ -326,26 +326,26 @@ export function SurveyBuilderForm() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Survey details</CardTitle>
+          <CardTitle>Detalji ankete</CardTitle>
           <CardDescription>
-            Basic information and targeting rules for this survey.
+            Osnovne informacije i pravila ciljanja za ovu anketu.
           </CardDescription>
         </CardHeader>
         <CardContent className="grid gap-4">
           <div className="space-y-2">
-            <Label htmlFor="title">Title</Label>
-            <Input id="title" {...register("title")} placeholder="Course feedback survey" />
+            <Label htmlFor="title">Naslov</Label>
+            <Input id="title" {...register("title")} placeholder="Anketa o kvaliteti nastave" />
             {errors.title && (
               <p className="text-sm text-destructive">{errors.title.message}</p>
             )}
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="description">Description</Label>
+            <Label htmlFor="description">Opis</Label>
             <Textarea
               id="description"
               {...register("description")}
-              placeholder="Explain the purpose of this survey"
+              placeholder="Opišite svrhu ove ankete"
               rows={4}
             />
             {errors.description && (
@@ -357,19 +357,19 @@ export function SurveyBuilderForm() {
 
           <div className="grid gap-4 sm:grid-cols-3">
             <div className="space-y-2">
-              <Label htmlFor="subject">Subject (optional)</Label>
-              <Input id="subject" {...register("subject")} placeholder="Mathematics" />
+              <Label htmlFor="subject">Predmet (neobavezno)</Label>
+              <Input id="subject" {...register("subject")} placeholder="Matematika" />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="targetProgram">Target program (optional)</Label>
+              <Label htmlFor="targetProgram">Ciljani smjer (neobavezno)</Label>
               <Input
                 id="targetProgram"
                 {...register("targetProgram")}
-                placeholder="Computer Science"
+                placeholder="Računarstvo"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="targetYear">Target year (optional)</Label>
+              <Label htmlFor="targetYear">Ciljana godina (neobavezno)</Label>
               <Input
                 id="targetYear"
                 type="number"
@@ -391,9 +391,9 @@ export function SurveyBuilderForm() {
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-xl font-semibold">Questions</h2>
+            <h2 className="text-xl font-semibold">Pitanja</h2>
             <p className="text-sm text-muted-foreground">
-              Add and configure the questions students will answer.
+              Dodajte i postavite pitanja na koja će studenti odgovarati.
             </p>
           </div>
           <Button
@@ -402,7 +402,7 @@ export function SurveyBuilderForm() {
             onClick={() => appendQuestion(createDefaultQuestion(questionFields.length))}
           >
             <Plus className="h-4 w-4" />
-            Add question
+            Dodaj pitanje
           </Button>
         </div>
 
@@ -422,10 +422,10 @@ export function SurveyBuilderForm() {
 
       <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
         <Button asChild variant="outline" type="button">
-          <Link href="/admin/dashboard">Cancel</Link>
+          <Link href="/admin/dashboard">Odustani</Link>
         </Button>
         <Button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? "Creating survey..." : "Create survey"}
+          {isSubmitting ? "Kreiranje ankete..." : "Izradi anketu"}
         </Button>
       </div>
     </form>
