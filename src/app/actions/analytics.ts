@@ -534,6 +534,7 @@ function buildCsvExportFilenames(title: string) {
 
 export async function exportSurveyDataCsv(
   surveyId: string,
+  filters: AnalyticsSegmentFilters = { program: null, year: null },
 ): Promise<
   AnalyticsActionResult<{
     csvBuffer: Buffer;
@@ -550,6 +551,7 @@ export async function exportSurveyDataCsv(
   }
 
   const { survey } = authResult;
+  const filteredResponses = filterResponsesBySegment(survey.responses, filters);
 
   const headers = [
     "ID odgovora",
@@ -559,7 +561,7 @@ export async function exportSurveyDataCsv(
     ...survey.questions.map((question) => question.text),
   ];
 
-  const rows = survey.responses.map((response) => {
+  const rows = filteredResponses.map((response) => {
     const baseColumns = [
       response.id,
       response.submittedAt.toISOString(),

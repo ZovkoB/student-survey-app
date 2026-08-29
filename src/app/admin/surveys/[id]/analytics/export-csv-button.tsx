@@ -4,8 +4,15 @@ import { useTransition } from "react";
 import { Download } from "lucide-react";
 import { toast } from "sonner";
 
+import {
+  getAnalyticsProgramParam,
+  getAnalyticsYearParam,
+} from "@/lib/analytics/filters";
+
 type ExportCsvButtonProps = {
   surveyId: string;
+  program: string | null;
+  year: number | null;
 };
 
 const CSV_CONTENT_TYPE = "text/csv; charset=utf-8";
@@ -26,15 +33,30 @@ function parseContentDispositionFilename(
   return asciiFilenameMatch?.[1] ?? null;
 }
 
-export function ExportCsvButton({ surveyId }: ExportCsvButtonProps) {
+function buildExportUrl(surveyId: string, program: string | null, year: number | null) {
+  const params = new URLSearchParams();
+  const programParam = getAnalyticsProgramParam(program);
+  const yearParam = getAnalyticsYearParam(year);
+
+  if (programParam !== "all") {
+    params.set("program", programParam);
+  }
+
+  if (yearParam !== "all") {
+    params.set("year", yearParam);
+  }
+
+  const query = params.toString();
+  return `/api/admin/surveys/${surveyId}/export-csv${query ? `?${query}` : ""}`;
+}
+
+export function ExportCsvButton({ surveyId, program, year }: ExportCsvButtonProps) {
   const [isPending, startTransition] = useTransition();
 
   function handleExport() {
     startTransition(async () => {
       try {
-        const response = await fetch(
-          `/api/admin/surveys/${surveyId}/export-csv`,
-        );
+        const response = await fetch(buildExportUrl(surveyId, program, year));
 
         if (!response.ok) {
           const errorBody = (await response.json().catch(() => null)) as {

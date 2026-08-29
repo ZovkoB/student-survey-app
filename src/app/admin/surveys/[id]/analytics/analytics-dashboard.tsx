@@ -81,7 +81,11 @@ export function AnalyticsDashboard({ data }: AnalyticsDashboardProps) {
             </p>
           )}
         </div>
-        <ExportCsvButton surveyId={data.survey.id} />
+        <ExportCsvButton
+          surveyId={data.survey.id}
+          program={data.segment.program}
+          year={data.segment.year}
+        />
       </div>
 
       <AnalyticsSegmentFiltersBar

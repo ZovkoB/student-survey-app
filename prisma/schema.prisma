@@ -25,6 +25,7 @@ model User {
   email        String   @unique
   passwordHash String
   role         Role
+  name         String?
   studyProgram String?
   yearOfStudy  Int?
   createdAt    DateTime @default(now())

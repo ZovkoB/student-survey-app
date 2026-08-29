@@ -7,6 +7,7 @@ import { auth } from "@/auth";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
 import { SurveyTable } from "./survey-table";
+import { CreateAdminDialog } from "./create-admin-dialog";
 
 export default async function AdminDashboardPage() {
   const session = await auth();
@@ -26,13 +27,16 @@ export default async function AdminDashboardPage() {
             Upravljajte anketama, pratite status i pregledajte prikupljene odgovore.
           </p>
         </div>
-        <Link
-          href="/admin/surveys/create"
-          className="inline-flex shrink-0 items-center gap-2 rounded-xl bg-[#5c4eb4] px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-[#4c3ea4]"
-        >
-          <Plus className="h-4 w-4" />
-          Izradi anketu
-        </Link>
+        <div className="flex shrink-0 flex-wrap items-center gap-2">
+          <CreateAdminDialog />
+          <Link
+            href="/admin/surveys/create"
+            className="inline-flex items-center gap-2 rounded-xl bg-[#5c4eb4] px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-[#4c3ea4]"
+          >
+            <Plus className="h-4 w-4" />
+            Izradi anketu
+          </Link>
+        </div>
       </div>
 
       {!result.success && (
