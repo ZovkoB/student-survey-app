@@ -1,36 +1,118 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Sustav za studentske ankete FSRE
 
-## Getting Started
+Službena web aplikacija za anonimno provođenje studentskih anketa i evaluaciju nastave na Fakultetu strojarstva, računarstva i elektrotehnike (FSRE).
 
-First, run the development server:
+Studenti ispunjavaju ankete prilagođene svom studijskom smjeru i godini. Administratori kreiraju ankete, prate odgovore i pregledavaju analitiku.
+
+## Tehnologije
+
+- **Next.js** (App Router) + **React** + **TypeScript**
+- **Tailwind CSS** za stilizaciju
+- **Prisma** + **PostgreSQL** baza podataka
+- **NextAuth.js** (Credentials + JWT) za autentifikaciju
+
+## Preduvjeti
+
+Prije pokretanja projekta potrebno je imati instalirano:
+
+- [Node.js](https://nodejs.org/) 20+
+- [npm](https://www.npmjs.com/)
+- PostgreSQL baza podataka (lokalno ili cloud, npr. Supabase / Neon)
+
+## Instalacija i pokretanje
+
+### 1. Klonirajte repozitorij i instalirajte ovisnosti
+
+```bash
+npm install
+```
+
+### 2. Postavite okruženje (`.env`)
+
+U korijenu projekta kreirajte datoteku `.env` sa sljedećim varijablama:
+
+```env
+DATABASE_URL="postgresql://USER:PASSWORD@HOST:5432/DATABASE?schema=public"
+DIRECT_URL="postgresql://USER:PASSWORD@HOST:5432/DATABASE?schema=public"
+AUTH_SECRET="generirajte-dugi-slucajni-string"
+```
+
+- `DATABASE_URL` — connection string za Prisma klijent
+- `DIRECT_URL` — direktna veza za migracije (Prisma)
+- `AUTH_SECRET` — tajna za NextAuth sesije (npr. `openssl rand -base64 32`)
+
+### 3. Primijenite migracije baze
+
+```bash
+npx prisma migrate dev
+```
+
+### 4. Popunite bazu test podacima
+
+```bash
+npx prisma db seed
+```
+
+Seed kreira administratorski račun, studentske račune, demo ankete i primjere odgovora.
+
+### 5. Pokrenite razvojni server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Aplikacija je dostupna na [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Demo testni pristupni podaci
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Svi seed računi koriste istu lozinku: **`password123`**
 
-## Learn More
+### Administrator
 
-To learn more about Next.js, take a look at the following resources:
+| Uloga | E-pošta | Lozinka | Dashboard |
+|-------|---------|---------|-----------|
+| Admin | `admin@fsre.sum.ba` | `password123` | `/admin/dashboard` |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Studenti — Računarstvo
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+| E-pošta | Godina |
+|---------|--------|
+| `marko.ramic@fsre.sum.ba` | 1 |
+| `ana.hodzic@fsre.sum.ba` | 3 |
+| `petra.nikolic@fsre.sum.ba` | 2 |
+| `sara.begic@fsre.sum.ba` | 3 |
 
-## Deploy on Vercel
+### Studenti — Strojarstvo
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+| E-pošta | Godina |
+|---------|--------|
+| `ivan.kovacevic@fsre.sum.ba` | 2 |
+| `lejla.selimovic@fsre.sum.ba` | 4 |
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Studenti — Elektrotehnika
+
+| E-pošta | Godina |
+|---------|--------|
+| `dino.mujkic@fsre.sum.ba` | 5 |
+| `emir.jahic@fsre.sum.ba` | 1 |
+| `tarik.salkic@fsre.sum.ba` | 3 |
+| `mina.turic@fsre.sum.ba` | 2 |
+
+Nakon prijave studenti se preusmjeravaju na `/surveys`. Administratori na `/admin/dashboard`.
+
+## Korisne naredbe
+
+| Naredba | Opis |
+|---------|------|
+| `npm run dev` | Pokretanje dev servera |
+| `npm run build` | Production build |
+| `npm run start` | Pokretanje production servera |
+| `npm run lint` | ESLint provjera |
+| `npx prisma db seed` | Ponovno punjenje demo podataka |
+| `npx prisma studio` | GUI pregled baze podataka |
+
+## Napomene
+
+- Registracija novih studenata zahtijeva e-poštu domena `@fsre.sum.ba`.
+- Demo verifikacijski kod pri registraciji: **`123456`**
+- Seed skripta briše postojeće studentske podatke i ankete pri svakom pokretanju (admin račun se zadržava/ažurira).

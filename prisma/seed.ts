@@ -926,6 +926,58 @@ async function main() {
     ],
   });
 
+  const webAppsSurvey = await createSurveyWithQuestions(admin.id, {
+    title: "Evaluacija nastave i praktičnog rada – Web aplikacije",
+    description:
+      "Anketa o kvaliteti predavanja, laboratorijskih vježbi i primjeni modernih tehnologija na predmetu Web aplikacije.",
+    subject: "Web aplikacije",
+    targetProgram: "Računarstvo",
+    isActive: true,
+    questions: [
+      {
+        text: "Jesu li praktične vježbe i zadaci bili usklađeni s teorijskim gradivom?",
+        type: QuestionType.RATING_1_5,
+        order: 0,
+      },
+      {
+        text: "Koliko procjenjujete da vam je rad na praktičnom projektu pomogao u usvajanju gradiva?",
+        type: QuestionType.RATING_1_5,
+        order: 1,
+      },
+      {
+        text: "Napišite vaše prijedloge ili kritike za poboljšanje izvođenja vježbi i projektnih zadataka:",
+        type: QuestionType.TEXT,
+        order: 2,
+      },
+    ],
+  });
+
+  const infrastructureSurvey = await createSurveyWithQuestions(admin.id, {
+    title: "Godišnja anketa o uvjetima studiranja i infrastrukturi",
+    description:
+      "Procjena zadovoljstva radom knjižnice, informatičkih učionica, internet mreže i općih usluga na Fakultetu.",
+    subject: "Opće",
+    targetProgram: null,
+    isActive: true,
+    questions: [
+      {
+        text: "Kako ocjenjujete brzinu i stabilnost Wi-Fi mreže te opremljenost računala u učionicama?",
+        type: QuestionType.RATING_1_5,
+        order: 0,
+      },
+      {
+        text: "Koliko ste zadovoljni radnim vremenom i pristupačnošću knjižnice te prostora za učenje?",
+        type: QuestionType.RATING_1_5,
+        order: 1,
+      },
+      {
+        text: "Koje dodatne sadržaje ili poboljšanja biste voljeli vidjeti na Fakultetu u sljedećoj akademiji?",
+        type: QuestionType.TEXT,
+        order: 2,
+      },
+    ],
+  });
+
   console.log("Generisanje odgovora studenata...");
   await seedResponses(programmingSurvey, generalSurvey, labSurvey, students);
   await seedAdditionalSurveyResponses(
@@ -956,7 +1008,10 @@ async function main() {
     );
   }
   console.log(
-    `\nAnkete: ${programmingSurvey.title}, ${generalSurvey.title}, ${labSurvey.title}, ${mathSurvey.title}, ${embeddedSurvey.title}, ${cafeteriaSurvey.title}`,
+    `\nAnkete: ${programmingSurvey.title}, ${generalSurvey.title}, ${labSurvey.title}, ${mathSurvey.title}, ${embeddedSurvey.title}, ${cafeteriaSurvey.title}, ${webAppsSurvey.title}, ${infrastructureSurvey.title}`,
+  );
+  console.log(
+    "Otvorene test ankete (bez odgovora): Web aplikacije, Godišnja anketa o infrastrukturi",
   );
   console.log(`Ukupno odgovora: ${responseCount}`);
 }
