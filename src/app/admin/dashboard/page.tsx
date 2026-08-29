@@ -5,7 +5,6 @@ import { Plus } from "lucide-react";
 import { getAdminSurveys } from "@/app/actions/surveys";
 import { auth } from "@/auth";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Button } from "@/components/ui/button";
 
 import { SurveyTable } from "./survey-table";
 
@@ -20,20 +19,20 @@ export default async function AdminDashboardPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Nadzorna ploča</h1>
-          <p className="mt-1 text-muted-foreground">
-            Upravljajte anketama, pratite status i pregledajte prikupljene
-            odgovore.
+          <h1 className="mb-1 text-3xl font-bold text-slate-900">Nadzorna ploča</h1>
+          <p className="mb-6 text-base text-slate-600">
+            Upravljajte anketama, pratite status i pregledajte prikupljene odgovore.
           </p>
         </div>
-        <Button asChild>
-          <Link href="/admin/surveys/create">
-            <Plus className="h-4 w-4" />
-            Izradi anketu
-          </Link>
-        </Button>
+        <Link
+          href="/admin/surveys/create"
+          className="inline-flex shrink-0 items-center gap-2 rounded-xl bg-[#5c4eb4] px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-[#4c3ea4]"
+        >
+          <Plus className="h-4 w-4" />
+          Izradi anketu
+        </Link>
       </div>
 
       {!result.success && (

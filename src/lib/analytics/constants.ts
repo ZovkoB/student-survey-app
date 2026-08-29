@@ -1,13 +1,15 @@
 export const ANALYTICS_COLORS = [
-  "#2563eb",
-  "#7c3aed",
-  "#db2777",
-  "#ea580c",
-  "#16a34a",
-  "#0891b2",
-  "#ca8a04",
-  "#dc2626",
+  "#5c4eb4",
+  "#7e70d4",
+  "#a59beb",
+  "#94a3b8",
+  "#cbd5e1",
+  "#64748b",
+  "#475569",
 ] as const;
+
+export const ANALYTICS_GRID_STROKE = "#e2e8f0";
+export const ANALYTICS_AXIS_FILL = "#64748b";
 
 export function formatPercentage(value: number) {
   return `${value.toFixed(1)}%`;

@@ -4,8 +4,6 @@ import { useTransition } from "react";
 import { Download } from "lucide-react";
 import { toast } from "sonner";
 
-import { Button } from "@/components/ui/button";
-
 type ExportCsvButtonProps = {
   surveyId: string;
 };
@@ -72,14 +70,14 @@ export function ExportCsvButton({ surveyId }: ExportCsvButtonProps) {
   }
 
   return (
-    <Button
-      variant="outline"
+    <button
+      type="button"
       onClick={handleExport}
       disabled={isPending}
-      className="shadow-sm"
+      className="inline-flex items-center gap-2 rounded-xl bg-[#5c4eb4] px-4 py-2 text-sm font-semibold text-white shadow-sm transition-all hover:bg-[#4c3ea4] disabled:cursor-not-allowed disabled:opacity-60"
     >
       <Download className="h-4 w-4" />
       {isPending ? "Izvoz..." : "Izvezi u CSV"}
-    </Button>
+    </button>
   );
 }

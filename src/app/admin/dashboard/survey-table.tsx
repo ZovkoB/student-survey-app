@@ -11,8 +11,6 @@ import {
   toggleSurveyStatus,
   type AdminSurveyListItem,
 } from "@/app/actions/surveys";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -26,6 +24,15 @@ import { formatDateTime, formatYearLabel } from "@/lib/i18n/hr";
 type SurveyTableProps = {
   surveys: AdminSurveyListItem[];
 };
+
+const analyticsButtonClassName =
+  "flex items-center gap-1.5 rounded-lg border border-slate-200/60 bg-slate-100 px-3 py-1.5 text-xs font-medium text-slate-800 transition-colors hover:bg-slate-200";
+
+const toggleButtonClassName =
+  "flex items-center gap-1.5 rounded-lg border border-amber-200/60 bg-amber-50 px-3 py-1.5 text-xs font-medium text-amber-700 transition-colors hover:bg-amber-100";
+
+const deleteButtonClassName =
+  "flex items-center gap-1.5 rounded-lg border border-rose-200/60 bg-rose-50 px-3 py-1.5 text-xs font-medium text-rose-700 transition-colors hover:bg-rose-100 disabled:cursor-not-allowed disabled:opacity-60";
 
 export function SurveyTable({ surveys }: SurveyTableProps) {
   const router = useRouter();
@@ -69,43 +76,61 @@ export function SurveyTable({ surveys }: SurveyTableProps) {
 
   if (surveys.length === 0) {
     return (
-      <div className="rounded-xl border border-dashed bg-background p-10 text-center shadow-sm">
-        <h3 className="text-lg font-medium">Još nema anketa</h3>
-        <p className="mt-2 text-sm text-muted-foreground">
+      <div className="overflow-hidden rounded-2xl border border-slate-200/80 bg-white p-10 text-center shadow-sm">
+        <h3 className="text-lg font-semibold text-slate-900">Još nema anketa</h3>
+        <p className="mt-2 text-sm text-slate-600">
           Izradite prvu anketu kako biste počeli prikupljati studentske povratne
           informacije.
         </p>
-        <Button asChild className="mt-6">
-          <Link href="/admin/surveys/create">Izradi anketu</Link>
-        </Button>
+        <Link
+          href="/admin/surveys/create"
+          className="mt-6 inline-flex items-center rounded-xl bg-[#5c4eb4] px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-[#4c3ea4]"
+        >
+          Izradi anketu
+        </Link>
       </div>
     );
   }
 
   return (
-    <div className="overflow-hidden rounded-xl border bg-background shadow-sm">
+    <div className="overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-sm">
       <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Anketa</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Pitanja</TableHead>
-            <TableHead>Odgovori</TableHead>
-            <TableHead>Kreirano</TableHead>
-            <TableHead className="text-right">Radnje</TableHead>
+        <TableHeader className="border-b border-slate-200 bg-slate-50">
+          <TableRow className="border-b border-slate-200 hover:bg-slate-50">
+            <TableHead className="px-6 py-3 text-xs font-semibold uppercase tracking-wider text-slate-600">
+              Anketa
+            </TableHead>
+            <TableHead className="px-6 py-3 text-xs font-semibold uppercase tracking-wider text-slate-600">
+              Status
+            </TableHead>
+            <TableHead className="px-6 py-3 text-xs font-semibold uppercase tracking-wider text-slate-600">
+              Pitanja
+            </TableHead>
+            <TableHead className="px-6 py-3 text-xs font-semibold uppercase tracking-wider text-slate-600">
+              Odgovori
+            </TableHead>
+            <TableHead className="px-6 py-3 text-xs font-semibold uppercase tracking-wider text-slate-600">
+              Kreirano
+            </TableHead>
+            <TableHead className="px-6 py-3 text-right text-xs font-semibold uppercase tracking-wider text-slate-600">
+              Radnje
+            </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {surveys.map((survey) => (
-            <TableRow key={survey.id} className="transition-colors hover:bg-muted/40">
-              <TableCell>
-                <div className="space-y-1">
-                  <p className="font-medium">{survey.title}</p>
-                  <p className="line-clamp-2 max-w-md text-sm text-muted-foreground">
+            <TableRow
+              key={survey.id}
+              className="border-b border-slate-100 transition-colors hover:bg-slate-50/50"
+            >
+              <TableCell className="px-6 py-4">
+                <div>
+                  <p className="text-base font-bold text-slate-900">{survey.title}</p>
+                  <p className="mt-0.5 line-clamp-2 max-w-md text-xs text-slate-500">
                     {survey.description}
                   </p>
                   {(survey.subject || survey.targetProgram || survey.targetYear) && (
-                    <p className="text-xs text-muted-foreground">
+                    <p className="mt-1 text-xs text-slate-500">
                       {[
                         survey.subject,
                         survey.targetProgram,
@@ -117,40 +142,53 @@ export function SurveyTable({ surveys }: SurveyTableProps) {
                   )}
                 </div>
               </TableCell>
-              <TableCell>
-                <Badge variant={survey.isActive ? "success" : "muted"}>
-                  {survey.isActive ? "Aktivno" : "Neaktivno"}
-                </Badge>
+              <TableCell className="px-6 py-4">
+                {survey.isActive ? (
+                  <span className="inline-flex rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-0.5 text-xs font-semibold text-emerald-700">
+                    Aktivno
+                  </span>
+                ) : (
+                  <span className="inline-flex rounded-full border border-slate-200 bg-slate-100 px-2.5 py-0.5 text-xs font-semibold text-slate-600">
+                    Neaktivno
+                  </span>
+                )}
               </TableCell>
-              <TableCell>{survey.questionCount}</TableCell>
-              <TableCell>{survey.responseCount}</TableCell>
-              <TableCell>{formatDateTime(survey.createdAt)}</TableCell>
-              <TableCell>
-                <div className="flex justify-end gap-2">
-                  <Button asChild variant="outline" size="sm">
-                    <Link href={`/admin/surveys/${survey.id}/analytics`}>
-                      <BarChart3 className="h-4 w-4" />
-                      Analitika
-                    </Link>
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
+              <TableCell className="px-6 py-4 text-sm font-medium text-slate-700">
+                {survey.questionCount}
+              </TableCell>
+              <TableCell className="px-6 py-4 text-sm font-medium text-slate-700">
+                {survey.responseCount}
+              </TableCell>
+              <TableCell className="px-6 py-4 text-sm font-medium text-slate-700">
+                {formatDateTime(survey.createdAt)}
+              </TableCell>
+              <TableCell className="px-6 py-4">
+                <div className="flex flex-wrap justify-end gap-2">
+                  <Link
+                    href={`/admin/surveys/${survey.id}/analytics`}
+                    className={analyticsButtonClassName}
+                  >
+                    <BarChart3 className="h-3.5 w-3.5" />
+                    Analitika
+                  </Link>
+                  <button
+                    type="button"
                     disabled={isPending}
                     onClick={() => handleToggleStatus(survey)}
+                    className={toggleButtonClassName}
                   >
-                    <Power className="h-4 w-4" />
+                    <Power className="h-3.5 w-3.5" />
                     {survey.isActive ? "Deaktiviraj" : "Aktiviraj"}
-                  </Button>
-                  <Button
-                    variant="destructive"
-                    size="sm"
+                  </button>
+                  <button
+                    type="button"
                     disabled={isPending}
                     onClick={() => handleDelete(survey)}
+                    className={deleteButtonClassName}
                   >
-                    <Trash2 className="h-4 w-4" />
+                    <Trash2 className="h-3.5 w-3.5" />
                     Obriši
-                  </Button>
+                  </button>
                 </div>
               </TableCell>
             </TableRow>

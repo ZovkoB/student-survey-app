@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { auth, signOut } from "@/auth";
@@ -22,8 +21,8 @@ export default async function SurveysLayout({
     <div className="flex min-h-screen flex-col justify-between bg-[#f3f2f8] text-slate-900">
       <header className="w-full shrink-0 bg-[#f3f2f8]">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-6">
-          <Link href="/" className="flex items-center gap-3 transition-opacity hover:opacity-80">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-600 text-white shadow-sm">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#5c4eb4] text-white shadow-sm">
               <svg
                 className="h-6 w-6"
                 fill="none"
@@ -42,7 +41,7 @@ export default async function SurveysLayout({
             <span className="text-xl font-bold tracking-tight text-slate-900">
               Studentske Ankete FSRE
             </span>
-          </Link>
+          </div>
 
           <div className="flex shrink-0 items-center gap-3 sm:gap-4">
             <span className="max-w-[140px] truncate text-sm text-slate-600 sm:max-w-[220px]">
