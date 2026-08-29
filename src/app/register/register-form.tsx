@@ -27,6 +27,14 @@ const initialState: AuthActionState = {
 const inputClassName =
   "bg-slate-50 border border-slate-300 text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100 rounded-lg p-3 text-sm h-auto";
 
+const yearOfStudyOptions = [
+  { value: "1", label: "1. godina" },
+  { value: "2", label: "2. godina" },
+  { value: "3", label: "3. godina" },
+  { value: "4", label: "4. godina" },
+  { value: "5", label: "5. godina" },
+] as const;
+
 const emailErrorClassName =
   "border-rose-400 focus:border-rose-500 focus:ring-rose-100";
 
@@ -133,8 +141,8 @@ export function RegisterForm() {
     }
 
     const parsedYear = Number.parseInt(yearOfStudy, 10);
-    if (!yearOfStudy.trim() || Number.isNaN(parsedYear) || parsedYear < 1 || parsedYear > 6) {
-      errors.yearOfStudy = "Unesite valjanu godinu studija (1–6)";
+    if (!yearOfStudy.trim() || Number.isNaN(parsedYear) || parsedYear < 1 || parsedYear > 5) {
+      errors.yearOfStudy = "Godina studija mora biti između 1 i 5";
     }
 
     if (!password) {
@@ -278,19 +286,34 @@ export function RegisterForm() {
               >
                 Godina studija
               </Label>
-              <Input
+              <select
                 id="yearOfStudy"
                 name="yearOfStudy"
-                type="number"
-                placeholder="1"
                 value={yearOfStudy}
-                onChange={(event) => setYearOfStudy(event.target.value)}
+                onChange={(event) => {
+                  setYearOfStudy(event.target.value);
+                  if (clientErrors.yearOfStudy) {
+                    setClientErrors((prev) => {
+                      const next = { ...prev };
+                      delete next.yearOfStudy;
+                      return next;
+                    });
+                  }
+                }}
                 aria-invalid={!!getFieldError("yearOfStudy")}
                 className={cn(
                   inputClassName,
+                  "h-auto w-full",
                   getFieldError("yearOfStudy") && emailErrorClassName,
                 )}
-              />
+              >
+                <option value="">Odaberite godinu</option>
+                {yearOfStudyOptions.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
               {getFieldError("yearOfStudy") && (
                 <FieldErrorMessage message={getFieldError("yearOfStudy")!} />
               )}

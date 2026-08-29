@@ -51,3 +51,9 @@ export function getStudyProgramMatchValues(
 }
 
 export const UTF8_BOM = "\uFEFF";
+
+export const STUDY_PROGRAM_OPTIONS = [
+  "Računarstvo",
+  "Strojarstvo",
+  "Elektrotehnika",
+] as const;

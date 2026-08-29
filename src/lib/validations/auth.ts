@@ -33,8 +33,8 @@ export const registerSchema = z
     yearOfStudy: z.coerce
       .number()
       .int()
-      .min(1, "Unesite valjanu godinu studija (1–6)")
-      .max(6, "Unesite valjanu godinu studija (1–6)"),
+      .min(1, "Godina studija mora biti između 1 i 5")
+      .max(5, "Godina studija mora biti između 1 i 5"),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Lozinke se ne podudaraju",

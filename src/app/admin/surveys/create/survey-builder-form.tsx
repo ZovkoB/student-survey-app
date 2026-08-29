@@ -9,16 +9,9 @@ import { toast } from "sonner";
 import { GripVertical, Plus, Trash2 } from "lucide-react";
 
 import { createSurvey } from "@/app/actions/surveys";
+import { STUDY_PROGRAM_OPTIONS } from "@/lib/study-program";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -29,11 +22,32 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { cn } from "@/lib/utils";
 import {
   createSurveySchema,
   QUESTION_TYPE_OPTIONS,
   type CreateSurveyInput,
 } from "@/lib/validations/survey";
+
+const cardClassName =
+  "rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm";
+
+const inputClassName =
+  "rounded-xl border-slate-300 bg-white text-slate-900 placeholder:text-slate-400 focus:border-[#5c4eb4] focus:ring-2 focus:ring-[#5c4eb4]/10 focus-visible:ring-offset-0";
+
+const selectTriggerClassName =
+  "rounded-xl border-slate-300 bg-white text-slate-900 focus:border-[#5c4eb4] focus:ring-2 focus:ring-[#5c4eb4]/10 focus:ring-offset-0";
+
+const labelClassName = "text-sm font-medium text-slate-700";
+
+const primaryButtonClassName =
+  "inline-flex items-center justify-center gap-2 rounded-xl bg-[#5c4eb4] px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-[#4c3ea4] disabled:cursor-not-allowed disabled:opacity-60";
+
+const secondaryButtonClassName =
+  "inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60";
+
+const removeButtonClassName =
+  "inline-flex items-center justify-center gap-1.5 rounded-lg border border-rose-200/60 bg-rose-50 px-3 py-1.5 text-xs font-medium text-rose-700 transition-colors hover:bg-rose-100 disabled:cursor-not-allowed disabled:opacity-60";
 
 function createDefaultQuestion(order: number): CreateSurveyInput["questions"][number] {
   return {
@@ -72,49 +86,49 @@ function QuestionOptionsEditor({
   });
 
   return (
-    <div className="space-y-3">
-      <Label>Opcije odgovora</Label>
+    <div className="space-y-3 rounded-xl border border-slate-200 bg-slate-50/50 p-4">
+      <Label className={labelClassName}>Opcije odgovora</Label>
       {fields.map((field, optionIndex) => (
         <div key={field.id} className="flex items-start gap-2">
           <Input
             {...register(`questions.${questionIndex}.options.${optionIndex}.text`)}
             placeholder={`Opcija ${optionIndex + 1}`}
+            className={inputClassName}
           />
-          <Button
+          <button
             type="button"
-            variant="outline"
-            size="icon"
             disabled={fields.length <= 2}
             onClick={() => remove(optionIndex)}
+            className={cn(removeButtonClassName, "shrink-0 px-2.5 py-2")}
+            aria-label={`Ukloni opciju ${optionIndex + 1}`}
           >
             <Trash2 className="h-4 w-4" />
-          </Button>
+          </button>
         </div>
       ))}
       {errors.questions?.[questionIndex]?.options?.message && (
-        <p className="text-sm text-destructive">
+        <p className="text-sm text-rose-600">
           {errors.questions[questionIndex]?.options?.message}
         </p>
       )}
       {errors.questions?.[questionIndex]?.options?.root?.message && (
-        <p className="text-sm text-destructive">
+        <p className="text-sm text-rose-600">
           {errors.questions[questionIndex]?.options?.root?.message}
         </p>
       )}
-      <Button
+      <button
         type="button"
-        variant="outline"
-        size="sm"
         onClick={() =>
           append({
             text: "",
             order: fields.length,
           })
         }
+        className={secondaryButtonClassName}
       >
         <Plus className="h-4 w-4" />
         Dodaj opciju
-      </Button>
+      </button>
     </div>
   );
 }
@@ -147,38 +161,41 @@ function QuestionCard({
   });
 
   return (
-    <Card>
-      <CardHeader className="flex flex-row items-start justify-between space-y-0">
-        <div className="space-y-1">
-          <CardTitle className="flex items-center gap-2 text-lg">
-            <GripVertical className="h-4 w-4 text-muted-foreground" />
+    <div className={cardClassName}>
+      <div className="mb-5 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <h3 className="flex items-center gap-2 text-lg font-bold text-slate-900">
+            <GripVertical className="h-4 w-4 text-slate-400" />
             Pitanje {questionIndex + 1}
-          </CardTitle>
-          <CardDescription>
+          </h3>
+          <p className="mt-1 text-sm text-slate-500">
             Postavite tekst pitanja, vrstu i opcije odgovora.
-          </CardDescription>
+          </p>
         </div>
-        <Button
+        <button
           type="button"
-          variant="outline"
-          size="sm"
           disabled={!canRemove}
           onClick={() => removeQuestion(questionIndex)}
+          className={removeButtonClassName}
         >
-          <Trash2 className="h-4 w-4" />
+          <Trash2 className="h-3.5 w-3.5" />
           Ukloni
-        </Button>
-      </CardHeader>
-      <CardContent className="space-y-4">
+        </button>
+      </div>
+
+      <div className="space-y-4">
         <div className="space-y-2">
-          <Label htmlFor={`question-text-${questionIndex}`}>Tekst pitanja</Label>
+          <Label htmlFor={`question-text-${questionIndex}`} className={labelClassName}>
+            Tekst pitanja
+          </Label>
           <Input
             id={`question-text-${questionIndex}`}
             {...register(`questions.${questionIndex}.text`)}
             placeholder="Unesite pitanje"
+            className={inputClassName}
           />
           {errors.questions?.[questionIndex]?.text && (
-            <p className="text-sm text-destructive">
+            <p className="text-sm text-rose-600">
               {errors.questions[questionIndex]?.text?.message}
             </p>
           )}
@@ -186,7 +203,7 @@ function QuestionCard({
 
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-2">
-            <Label>Vrsta pitanja</Label>
+            <Label className={labelClassName}>Vrsta pitanja</Label>
             <Select
               value={questionType}
               onValueChange={(value: QuestionType) => {
@@ -204,7 +221,7 @@ function QuestionCard({
                 }
               }}
             >
-              <SelectTrigger>
+              <SelectTrigger className={selectTriggerClassName}>
                 <SelectValue placeholder="Odaberite vrstu" />
               </SelectTrigger>
               <SelectContent>
@@ -218,7 +235,7 @@ function QuestionCard({
           </div>
 
           <div className="flex items-end">
-            <label className="flex items-center gap-2 text-sm font-medium">
+            <label className="flex items-center gap-2 text-sm font-medium text-slate-700">
               <Checkbox
                 checked={isRequired}
                 onCheckedChange={(checked) =>
@@ -244,18 +261,18 @@ function QuestionCard({
         )}
 
         {questionType === QuestionType.RATING_1_5 && (
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm text-slate-500">
             Studenti će ocijeniti ovo pitanje na ljestvici od 1 do 5.
           </p>
         )}
 
         {questionType === QuestionType.TEXT && (
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm text-slate-500">
             Studenti će dati slobodan tekstualni odgovor na ovo pitanje.
           </p>
         )}
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }
 
@@ -289,6 +306,9 @@ export function SurveyBuilderForm() {
     name: "questions",
   });
 
+  const targetProgram = useWatch({ control, name: "targetProgram" });
+  const targetYear = useWatch({ control, name: "targetYear" });
+
   async function onSubmit(values: CreateSurveyInput) {
     const normalizedQuestions = values.questions.map((question, index) => ({
       ...question,
@@ -317,116 +337,172 @@ export function SurveyBuilderForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       {errors.questions?.message && (
         <Alert variant="destructive">
           <AlertDescription>{errors.questions.message}</AlertDescription>
         </Alert>
       )}
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Detalji ankete</CardTitle>
-          <CardDescription>
+      <div className={cardClassName}>
+        <div className="mb-5">
+          <h2 className="text-lg font-bold text-slate-900">Detalji ankete</h2>
+          <p className="mt-1 text-sm text-slate-500">
             Osnovne informacije i pravila ciljanja za ovu anketu.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="grid gap-4">
+          </p>
+        </div>
+
+        <div className="grid gap-4">
           <div className="space-y-2">
-            <Label htmlFor="title">Naslov</Label>
-            <Input id="title" {...register("title")} placeholder="Anketa o kvaliteti nastave" />
+            <Label htmlFor="title" className={labelClassName}>
+              Naslov
+            </Label>
+            <Input
+              id="title"
+              {...register("title")}
+              placeholder="Anketa o kvaliteti nastave"
+              className={inputClassName}
+            />
             {errors.title && (
-              <p className="text-sm text-destructive">{errors.title.message}</p>
+              <p className="text-sm text-rose-600">{errors.title.message}</p>
             )}
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="description">Opis</Label>
+            <Label htmlFor="description" className={labelClassName}>
+              Opis
+            </Label>
             <Textarea
               id="description"
               {...register("description")}
               placeholder="Opišite svrhu ove ankete"
               rows={4}
+              className={inputClassName}
             />
             {errors.description && (
-              <p className="text-sm text-destructive">
-                {errors.description.message}
-              </p>
+              <p className="text-sm text-rose-600">{errors.description.message}</p>
             )}
           </div>
 
           <div className="grid gap-4 sm:grid-cols-3">
             <div className="space-y-2">
-              <Label htmlFor="subject">Predmet (neobavezno)</Label>
-              <Input id="subject" {...register("subject")} placeholder="Matematika" />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="targetProgram">Ciljani smjer (neobavezno)</Label>
+              <Label htmlFor="subject" className={labelClassName}>
+                Predmet (neobavezno)
+              </Label>
               <Input
-                id="targetProgram"
-                {...register("targetProgram")}
-                placeholder="Računarstvo"
+                id="subject"
+                {...register("subject")}
+                placeholder="Matematika"
+                className={inputClassName}
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="targetYear">Ciljana godina (neobavezno)</Label>
-              <Input
-                id="targetYear"
-                type="number"
-                min={1}
-                max={6}
-                {...register("targetYear")}
-                placeholder="3"
-              />
+              <Label htmlFor="targetProgram" className={labelClassName}>
+                Ciljani smjer (neobavezno)
+              </Label>
+              <Select
+                value={targetProgram?.trim() ? targetProgram : "all"}
+                onValueChange={(value) =>
+                  setValue("targetProgram", value === "all" ? "" : value, {
+                    shouldValidate: true,
+                  })
+                }
+              >
+                <SelectTrigger id="targetProgram" className={selectTriggerClassName}>
+                  <SelectValue placeholder="Svi smjerovi" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Svi smjerovi</SelectItem>
+                  {STUDY_PROGRAM_OPTIONS.map((program) => (
+                    <SelectItem key={program} value={program}>
+                      {program}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {errors.targetProgram && (
+                <p className="text-sm text-rose-600">{errors.targetProgram.message}</p>
+              )}
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="targetYear" className={labelClassName}>
+                Ciljana godina (neobavezno)
+              </Label>
+              <Select
+                value={
+                  targetYear !== undefined && targetYear !== null
+                    ? String(targetYear)
+                    : "all"
+                }
+                onValueChange={(value) =>
+                  setValue(
+                    "targetYear",
+                    value === "all" ? undefined : Number.parseInt(value, 10),
+                    { shouldValidate: true },
+                  )
+                }
+              >
+                <SelectTrigger id="targetYear" className={selectTriggerClassName}>
+                  <SelectValue placeholder="Sve godine" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Sve godine</SelectItem>
+                  {[1, 2, 3, 4, 5].map((year) => (
+                    <SelectItem key={year} value={String(year)}>
+                      {year}. godina
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
               {errors.targetYear && (
-                <p className="text-sm text-destructive">
-                  {errors.targetYear.message}
-                </p>
+                <p className="text-sm text-rose-600">{errors.targetYear.message}</p>
               )}
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
       <div className="space-y-4">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h2 className="text-xl font-semibold">Pitanja</h2>
-            <p className="text-sm text-muted-foreground">
+            <h2 className="text-xl font-bold text-slate-900">Pitanja</h2>
+            <p className="mt-1 text-sm text-slate-500">
               Dodajte i postavite pitanja na koja će studenti odgovarati.
             </p>
           </div>
-          <Button
+          <button
             type="button"
-            variant="outline"
             onClick={() => appendQuestion(createDefaultQuestion(questionFields.length))}
+            className={secondaryButtonClassName}
           >
             <Plus className="h-4 w-4" />
             Dodaj pitanje
-          </Button>
+          </button>
         </div>
 
-        {questionFields.map((field, index) => (
-          <QuestionCard
-            key={field.id}
-            questionIndex={index}
-            control={control}
-            register={register}
-            setValue={setValue}
-            removeQuestion={removeQuestion}
-            canRemove={questionFields.length > 1}
-            errors={errors}
-          />
-        ))}
+        <div className="space-y-4">
+          {questionFields.map((field, index) => (
+            <QuestionCard
+              key={field.id}
+              questionIndex={index}
+              control={control}
+              register={register}
+              setValue={setValue}
+              removeQuestion={removeQuestion}
+              canRemove={questionFields.length > 1}
+              errors={errors}
+            />
+          ))}
+        </div>
       </div>
 
       <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
-        <Button asChild variant="outline" type="button">
-          <Link href="/admin/dashboard">Odustani</Link>
-        </Button>
-        <Button type="submit" disabled={isSubmitting}>
+        <Link href="/admin/dashboard" className={secondaryButtonClassName}>
+          Odustani
+        </Link>
+        <button type="submit" disabled={isSubmitting} className={primaryButtonClassName}>
           {isSubmitting ? "Kreiranje ankete..." : "Izradi anketu"}
-        </Button>
+        </button>
       </div>
     </form>
   );

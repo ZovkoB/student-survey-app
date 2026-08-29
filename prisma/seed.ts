@@ -41,6 +41,31 @@ const studentsSeed = [
     studyProgram: "Elektrotehnika",
     yearOfStudy: 5,
   },
+  {
+    email: "petra.nikolic@fsre.sum.ba",
+    studyProgram: "Računarstvo",
+    yearOfStudy: 2,
+  },
+  {
+    email: "emir.jahic@fsre.sum.ba",
+    studyProgram: "Elektrotehnika",
+    yearOfStudy: 1,
+  },
+  {
+    email: "tarik.salkic@fsre.sum.ba",
+    studyProgram: "Elektrotehnika",
+    yearOfStudy: 3,
+  },
+  {
+    email: "mina.turic@fsre.sum.ba",
+    studyProgram: "Elektrotehnika",
+    yearOfStudy: 2,
+  },
+  {
+    email: "sara.begic@fsre.sum.ba",
+    studyProgram: "Računarstvo",
+    yearOfStudy: 3,
+  },
 ] as const;
 
 type QuestionWithOptions = Question & { options: QuestionOption[] };
@@ -420,6 +445,223 @@ async function seedResponses(
   );
 }
 
+async function seedAdditionalSurveyResponses(
+  mathSurvey: SurveyWithQuestions,
+  embeddedSurvey: SurveyWithQuestions,
+  cafeteriaSurvey: SurveyWithQuestions,
+  students: User[],
+) {
+  const [marko, ana, ivan, lejla, dino, petra, emir, tarik, mina, sara] = students;
+
+  await createResponse(
+    mathSurvey,
+    dino,
+    [
+      { questionOrder: 0, selectedOptionIndexes: [1] },
+      { questionOrder: 1, selectedOptionIndexes: [0, 2] },
+      { questionOrder: 2, ratingValue: 3 },
+      {
+        questionOrder: 3,
+        textValue:
+          "Više primjera iz inženjerstva tokom predavanja bi olakšalo razumijevanje derivacija i integrala.",
+      },
+    ],
+    new Date("2026-04-02T09:10:00.000Z"),
+  );
+
+  await createResponse(
+    mathSurvey,
+    emir,
+    [
+      { questionOrder: 0, selectedOptionIndexes: [0] },
+      { questionOrder: 1, selectedOptionIndexes: [1, 3] },
+      { questionOrder: 2, ratingValue: 5 },
+      {
+        questionOrder: 3,
+        textValue:
+          "Profesor jasno objašnava gradivo, a konsultacije su vrlo korisne prije kolokvija.",
+      },
+    ],
+    new Date("2026-04-02T11:30:00.000Z"),
+  );
+
+  await createResponse(
+    mathSurvey,
+    tarik,
+    [
+      { questionOrder: 0, selectedOptionIndexes: [2] },
+      { questionOrder: 1, selectedOptionIndexes: [0, 1] },
+      { questionOrder: 2, ratingValue: 4 },
+      {
+        questionOrder: 3,
+        textValue:
+          "Predložio bih dodatne zadatke iz elektrotehnike za vježbanje integrala.",
+      },
+    ],
+    new Date("2026-04-03T08:45:00.000Z"),
+  );
+
+  await createResponse(
+    mathSurvey,
+    mina,
+    [
+      { questionOrder: 0, selectedOptionIndexes: [1] },
+      { questionOrder: 1, selectedOptionIndexes: [2, 3] },
+      { questionOrder: 2, ratingValue: 4 },
+      {
+        questionOrder: 3,
+        textValue:
+          "Online materijali su korisni, ali tempo na vježbama ponekad je prebrz za početnike.",
+      },
+    ],
+    new Date("2026-04-03T14:20:00.000Z"),
+  );
+
+  await createResponse(
+    embeddedSurvey,
+    marko,
+    [
+      { questionOrder: 0, selectedOptionIndexes: [0] },
+      { questionOrder: 1, selectedOptionIndexes: [0, 2, 3] },
+      { questionOrder: 2, ratingValue: 5 },
+      {
+        questionOrder: 3,
+        textValue:
+          "Radionica s Raspberry Pi i senzorima temperature bio je najkorisniji dio kolegija.",
+      },
+    ],
+    new Date("2026-04-05T09:00:00.000Z"),
+  );
+
+  await createResponse(
+    embeddedSurvey,
+    ana,
+    [
+      { questionOrder: 0, selectedOptionIndexes: [1] },
+      { questionOrder: 1, selectedOptionIndexes: [1, 2] },
+      { questionOrder: 2, ratingValue: 4 },
+      {
+        questionOrder: 3,
+        textValue:
+          "IoT demo projekti su zanimljivi, ali bi trebalo više vremena za debugiranje koda.",
+      },
+    ],
+    new Date("2026-04-05T13:15:00.000Z"),
+  );
+
+  await createResponse(
+    embeddedSurvey,
+    petra,
+    [
+      { questionOrder: 0, selectedOptionIndexes: [2] },
+      { questionOrder: 1, selectedOptionIndexes: [1, 3] },
+      { questionOrder: 2, ratingValue: 3 },
+      {
+        questionOrder: 3,
+        textValue:
+          "Korisno bi bilo imati više uputa prije samostalnog rada na projektu.",
+      },
+    ],
+    new Date("2026-04-07T10:25:00.000Z"),
+  );
+
+  await createResponse(
+    embeddedSurvey,
+    sara,
+    [
+      { questionOrder: 0, selectedOptionIndexes: [0] },
+      { questionOrder: 1, selectedOptionIndexes: [0, 2] },
+      { questionOrder: 2, ratingValue: 4 },
+      {
+        questionOrder: 3,
+        textValue:
+          "Timski IoT zadatak je bio najzanimljiviji dio kolegija i dobro povezan s praksom.",
+      },
+    ],
+    new Date("2026-04-07T15:10:00.000Z"),
+  );
+
+  await createResponse(
+    cafeteriaSurvey,
+    marko,
+    [
+      { questionOrder: 0, selectedOptionIndexes: [1] },
+      { questionOrder: 1, selectedOptionIndexes: [0, 2] },
+      { questionOrder: 2, ratingValue: 3 },
+      {
+        questionOrder: 3,
+        textValue:
+          "Ponuda u menzi je pristupačna, ali bi trebalo više zdravih opcija za ručak.",
+      },
+    ],
+    new Date("2026-02-10T12:00:00.000Z"),
+  );
+
+  await createResponse(
+    cafeteriaSurvey,
+    ana,
+    [
+      { questionOrder: 0, selectedOptionIndexes: [0] },
+      { questionOrder: 1, selectedOptionIndexes: [1, 3] },
+      { questionOrder: 2, ratingValue: 4 },
+      {
+        questionOrder: 3,
+        textValue:
+          "Radno vrijeme menze ujutro bi trebalo biti produženo prije jutarnjih predavanja.",
+      },
+    ],
+    new Date("2026-02-11T11:20:00.000Z"),
+  );
+
+  await createResponse(
+    cafeteriaSurvey,
+    ivan,
+    [
+      { questionOrder: 0, selectedOptionIndexes: [2] },
+      { questionOrder: 1, selectedOptionIndexes: [0, 1] },
+      { questionOrder: 2, ratingValue: 3 },
+      {
+        questionOrder: 3,
+        textValue:
+          "Cijene su razumne, ali redovi u špicu ručka su predugački.",
+      },
+    ],
+    new Date("2026-02-12T13:45:00.000Z"),
+  );
+
+  await createResponse(
+    cafeteriaSurvey,
+    lejla,
+    [
+      { questionOrder: 0, selectedOptionIndexes: [1] },
+      { questionOrder: 1, selectedOptionIndexes: [2, 3] },
+      { questionOrder: 2, ratingValue: 4 },
+      {
+        questionOrder: 3,
+        textValue:
+          "Sviđa mi se dnevna ponuda salata; molim više vegetarijanskih jela.",
+      },
+    ],
+    new Date("2026-02-13T12:30:00.000Z"),
+  );
+
+  await createResponse(
+    cafeteriaSurvey,
+    dino,
+    [
+      { questionOrder: 0, selectedOptionIndexes: [3] },
+      { questionOrder: 1, selectedOptionIndexes: [0, 3] },
+      { questionOrder: 2, ratingValue: 2 },
+      {
+        questionOrder: 3,
+        textValue:
+          "Kvaliteta obroka varira; neki dani su znatno bolji od drugih.",
+      },
+    ],
+    new Date("2026-02-14T14:10:00.000Z"),
+  );
+}
+
 async function main() {
   console.log("Brisanje postojećih podataka...");
   await clearDatabase();
@@ -482,6 +724,7 @@ async function main() {
     description:
       "Anketa o općem zadovoljstvu studijem, nastavnom procesu i studentskim uslugama na Fakultetu.",
     subject: "Opće",
+    targetProgram: null,
     questions: [
       {
         text: "Koliko ste zadovoljni organizacijom studijskog programa?",
@@ -560,13 +803,144 @@ async function main() {
     ],
   });
 
+  const mathSurvey = await createSurveyWithQuestions(admin.id, {
+    title: "Anketa o nastavi – Matematika za inženjere",
+    description:
+      "Evaluacija kvalitete nastave predmeta Matematika I za studente inženjerskih smjerova u zimskom semestru.",
+    subject: "Matematika I",
+    targetProgram: "Elektrotehnika",
+    isActive: true,
+    questions: [
+      {
+        text: "Koliko je nastava Matematike I jasna i razumljiva?",
+        type: QuestionType.SINGLE_CHOICE,
+        order: 0,
+        options: ["Vrlo jasna", "Jasna", "Prosječna", "Nejasna"],
+      },
+      {
+        text: "Koje nastavne aktivnosti vam najviše pomažu?",
+        type: QuestionType.MULTIPLE_CHOICE,
+        order: 1,
+        options: [
+          "Predavanja",
+          "Vježbe",
+          "Online materijali",
+          "Konsultacije",
+        ],
+      },
+      {
+        text: "Ocijenite korisnost vježbi iz Matematike I (1-5).",
+        type: QuestionType.RATING_1_5,
+        order: 2,
+      },
+      {
+        text: "Koje poboljšanje biste predložili za sljedeći semestar?",
+        type: QuestionType.TEXT,
+        order: 3,
+      },
+    ],
+  });
+
+  const embeddedSurvey = await createSurveyWithQuestions(admin.id, {
+    title: "Evaluacija ugradbenih sustava i IoT radionica",
+    description:
+      "Anketa o kvaliteti praktičnih radionica iz ugradbenih sustava, mikrokontrolera i IoT projekata.",
+    subject: "Ugradbeni sustavi",
+    targetProgram: "Računarstvo",
+    isActive: true,
+    questions: [
+      {
+        text: "Koliko su radionice usklađene s ishodima učenja predmeta?",
+        type: QuestionType.SINGLE_CHOICE,
+        order: 0,
+        options: [
+          "Potpuno usklađene",
+          "Uglavnom usklađene",
+          "Djelimično usklađene",
+          "Neusklađene",
+        ],
+      },
+      {
+        text: "Koje elemente IoT radionica smatrate najkorisnijim?",
+        type: QuestionType.MULTIPLE_CHOICE,
+        order: 1,
+        options: [
+          "Rad s mikrokontrolerima",
+          "Senzorski moduli",
+          "Timski projekti",
+          "Demonstracije nastavnika",
+        ],
+      },
+      {
+        text: "Ocijenite kvalitet opreme u radionici (1-5).",
+        type: QuestionType.RATING_1_5,
+        order: 2,
+      },
+      {
+        text: "Opišite svoje iskustvo s praktičnim radom na IoT projektu.",
+        type: QuestionType.TEXT,
+        order: 3,
+      },
+    ],
+  });
+
+  const cafeteriaSurvey = await createSurveyWithQuestions(admin.id, {
+    title: "Anketa o studentskoj prehrani i ponudi",
+    description:
+      "Anketa o kvaliteti ponude, cijenama i uslugama studentske menze i restorana na kampusu.",
+    subject: "Studentski standard",
+    isActive: false,
+    questions: [
+      {
+        text: "Koliko ste zadovoljni ukupnom ponudom u studentskoj menzi?",
+        type: QuestionType.SINGLE_CHOICE,
+        order: 0,
+        options: [
+          "Vrlo zadovoljan/na",
+          "Zadovoljan/na",
+          "Neutralno",
+          "Nezadovoljan/na",
+        ],
+      },
+      {
+        text: "Koje usluge studentske prehrane najviše koristite?",
+        type: QuestionType.MULTIPLE_CHOICE,
+        order: 1,
+        options: [
+          "Dnevni ručak",
+          "Brza jela",
+          "Salate i zdrava hrana",
+          "Automati za piće",
+        ],
+      },
+      {
+        text: "Ocijenite omjer cijene i kvalitete obroka (1-5).",
+        type: QuestionType.RATING_1_5,
+        order: 2,
+      },
+      {
+        text: "Navedite prijedlog za poboljšanje studentske prehrane.",
+        type: QuestionType.TEXT,
+        order: 3,
+      },
+    ],
+  });
+
   console.log("Generisanje odgovora studenata...");
   await seedResponses(programmingSurvey, generalSurvey, labSurvey, students);
+  await seedAdditionalSurveyResponses(
+    mathSurvey,
+    embeddedSurvey,
+    cafeteriaSurvey,
+    students,
+  );
 
   const relinkedAfterCreate = await relinkSurveysToAdmin(admin.id);
   const adminSurveyCount = await prisma.survey.count({
     where: { createdById: admin.id },
   });
+
+  const responseCount = await prisma.response.count();
 
   console.log("\nSeed završen uspješno.");
   console.log(`Admin: ${ADMIN_EMAIL} / ${PASSWORD_PLAIN}`);
@@ -581,8 +955,10 @@ async function main() {
       `- ${student.email} (${student.studyProgram}, ${student.yearOfStudy}. godina) / ${PASSWORD_PLAIN}`,
     );
   }
-  console.log(`\nAnkete: ${programmingSurvey.title}, ${generalSurvey.title}, ${labSurvey.title}`);
-  console.log("Ukupno odgovora: 8");
+  console.log(
+    `\nAnkete: ${programmingSurvey.title}, ${generalSurvey.title}, ${labSurvey.title}, ${mathSurvey.title}, ${embeddedSurvey.title}, ${cafeteriaSurvey.title}`,
+  );
+  console.log(`Ukupno odgovora: ${responseCount}`);
 }
 
 main()

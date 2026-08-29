@@ -1,26 +1,23 @@
 import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
-
 import { SurveyBuilderForm } from "./survey-builder-form";
 
 export default function CreateSurveyPage() {
   return (
     <div className="space-y-6">
-      <div className="space-y-4">
-        <Button asChild variant="ghost" className="px-0 hover:bg-transparent">
-          <Link href="/admin/dashboard">
-            <ChevronLeft className="h-4 w-4" />
-            Natrag na nadzornu ploču
-          </Link>
-        </Button>
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Izradi anketu</h1>
-          <p className="mt-1 text-muted-foreground">
-            Izradite novu anketu s dinamičkim pitanjima i opcijama odgovora.
-          </p>
-        </div>
+      <div>
+        <Link
+          href="/admin/dashboard"
+          className="mb-4 inline-flex items-center gap-2 text-sm font-medium text-slate-600 transition-colors hover:text-slate-900"
+        >
+          <ChevronLeft className="h-4 w-4" />
+          Natrag na nadzornu ploču
+        </Link>
+        <h1 className="mb-1 text-3xl font-bold text-slate-900">Izradi anketu</h1>
+        <p className="text-base text-slate-600">
+          Izradite novu anketu s dinamičkim pitanjima i opcijama odgovora.
+        </p>
       </div>
 
       <SurveyBuilderForm />

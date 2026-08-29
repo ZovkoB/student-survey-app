@@ -1,6 +1,8 @@
 import { QuestionType } from "@prisma/client";
 import { z } from "zod";
 
+import { STUDY_PROGRAM_OPTIONS } from "@/lib/study-program";
+
 export const questionTypeSchema = z.nativeEnum(QuestionType);
 
 export const questionOptionSchema = z.object({
@@ -40,7 +42,19 @@ export const createSurveySchema = z.object({
     .max(200, "Naslov smije imati najviše 200 znakova"),
   description: z.string().trim().min(1, "Opis je obavezan"),
   subject: z.string().trim().optional(),
-  targetProgram: z.string().trim().optional(),
+  targetProgram: z
+    .string()
+    .trim()
+    .optional()
+    .transform((value) => (value ? value : undefined))
+    .refine(
+      (value) =>
+        value === undefined ||
+        STUDY_PROGRAM_OPTIONS.includes(
+          value as (typeof STUDY_PROGRAM_OPTIONS)[number],
+        ),
+      "Odaberite valjan studijski smjer",
+    ),
   targetYear: z.preprocess(
     (value) =>
       value === "" || value === null || value === undefined
@@ -49,8 +63,8 @@ export const createSurveySchema = z.object({
     z
       .number()
       .int()
-      .min(1, "Ciljana godina mora biti između 1 i 6")
-      .max(6, "Ciljana godina mora biti između 1 i 6")
+      .min(1, "Ciljana godina mora biti između 1 i 5")
+      .max(5, "Ciljana godina mora biti između 1 i 5")
       .optional(),
   ),
   questions: z
