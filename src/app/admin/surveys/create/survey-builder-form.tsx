@@ -30,7 +30,7 @@ import {
 } from "@/lib/validations/survey";
 
 const cardClassName =
-  "rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm";
+  "w-full min-w-0 rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm md:p-6";
 
 const inputClassName =
   "rounded-xl border-slate-300 bg-white text-slate-900 placeholder:text-slate-400 focus:border-[#5c4eb4] focus:ring-2 focus:ring-[#5c4eb4]/10 focus-visible:ring-offset-0";
@@ -201,8 +201,8 @@ function QuestionCard({
           )}
         </div>
 
-        <div className="grid gap-4 sm:grid-cols-2">
-          <div className="space-y-2">
+        <div className="app-grid-2">
+          <div className="min-w-0 space-y-2">
             <Label className={labelClassName}>Vrsta pitanja</Label>
             <Select
               value={questionType}
@@ -234,7 +234,7 @@ function QuestionCard({
             </Select>
           </div>
 
-          <div className="flex items-end">
+          <div className="flex min-w-0 items-end">
             <label className="flex items-center gap-2 text-sm font-medium text-slate-700">
               <Checkbox
                 checked={isRequired}
@@ -384,8 +384,8 @@ export function SurveyBuilderForm() {
             )}
           </div>
 
-          <div className="grid gap-4 sm:grid-cols-3">
-            <div className="space-y-2">
+          <div className="app-grid-3">
+            <div className="min-w-0 space-y-2">
               <Label htmlFor="subject" className={labelClassName}>
                 Predmet (neobavezno)
               </Label>
@@ -396,7 +396,7 @@ export function SurveyBuilderForm() {
                 className={inputClassName}
               />
             </div>
-            <div className="space-y-2">
+            <div className="min-w-0 space-y-2">
               <Label htmlFor="targetProgram" className={labelClassName}>
                 Ciljani smjer (neobavezno)
               </Label>
@@ -424,7 +424,7 @@ export function SurveyBuilderForm() {
                 <p className="text-sm text-rose-600">{errors.targetProgram.message}</p>
               )}
             </div>
-            <div className="space-y-2">
+            <div className="min-w-0 space-y-2">
               <Label htmlFor="targetYear" className={labelClassName}>
                 Ciljana godina (neobavezno)
               </Label>

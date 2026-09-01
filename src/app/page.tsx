@@ -3,13 +3,13 @@ import Link from "next/link";
 import { auth, signOut } from "@/auth";
 
 const primaryButtonClassName =
-  "inline-flex items-center justify-center rounded-xl bg-[#5c4eb4] px-8 py-4 text-base font-semibold text-white shadow-md transition-all hover:bg-[#4c3ea4]";
+  "inline-flex items-center justify-center rounded-xl bg-[#5c4eb4] px-6 py-3 text-sm font-semibold text-white shadow-md transition-all hover:bg-[#4c3ea4] md:px-8 md:py-3.5 md:text-base";
 
 const secondaryButtonClassName =
-  "inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-8 py-4 text-base font-semibold text-slate-700 shadow-sm transition-all hover:bg-slate-50";
+  "inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-6 py-3 text-sm font-semibold text-slate-700 shadow-sm transition-all hover:bg-slate-50 md:px-8 md:py-3.5 md:text-base";
 
 const featureCardClassName =
-  "rounded-2xl border border-slate-200/80 bg-white/80 p-6 shadow-sm backdrop-blur-sm";
+  "w-full min-w-0 rounded-2xl border border-slate-200/80 bg-white/80 p-5 shadow-sm backdrop-blur-sm md:p-6";
 
 type FeatureCard = {
   title: string;
@@ -56,7 +56,7 @@ const publicFeatureCards = studentFeatureCards;
 
 function FeatureCards({ cards }: { cards: FeatureCard[] }) {
   return (
-    <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+    <div className="app-grid-3">
       {cards.map((card) => (
         <div key={card.title} className={featureCardClassName}>
           <h3 className="text-lg font-semibold text-slate-900">{card.title}</h3>
@@ -79,9 +79,9 @@ export default async function HomePage() {
       : studentFeatureCards;
 
   return (
-    <div className="flex min-h-screen flex-col justify-between bg-[#f3f2f8] text-slate-900">
+    <div className="flex min-h-screen w-full min-w-0 flex-col justify-between bg-[#f3f2f8] text-slate-900">
       <header className="w-full bg-[#f3f2f8]">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-6">
+        <div className="app-container flex items-center justify-between py-4 md:py-5">
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#5c4eb4] text-white shadow-sm">
               <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -138,19 +138,19 @@ export default async function HomePage() {
         </div>
       </header>
 
-      <main className="mx-auto my-auto w-full max-w-7xl px-6 py-12 md:py-20">
-        <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2">
-          <div className="max-w-xl">
+      <main className="app-container my-auto py-10 md:py-12">
+        <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-2 lg:gap-10">
+          <div className="min-w-0 max-w-xl">
             {isAuthenticated && isAdmin ? (
               <>
-                <h1 className="text-4xl font-extrabold leading-tight tracking-tight text-slate-900 sm:text-5xl lg:text-6xl">
+                <h1 className="hero-title">
                   Admin nadzorna ploča
                 </h1>
-                <p className="mt-6 text-lg leading-relaxed text-slate-600">
+                <p className="mt-4 text-base leading-relaxed text-slate-600 md:text-lg">
                   Upravljajte anketama, izradite nove upitnike i pregledajte analitiku odgovora
                   FSRE studenata.
                 </p>
-                <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+                <div className="mt-6 flex flex-col gap-3 sm:flex-row">
                   <Link href="/admin/surveys/create" className={primaryButtonClassName}>
                     Izradi novu anketu
                   </Link>
@@ -161,13 +161,13 @@ export default async function HomePage() {
               </>
             ) : isAuthenticated ? (
               <>
-                <h1 className="text-4xl font-extrabold leading-tight tracking-tight text-slate-900 sm:text-5xl lg:text-6xl">
+                <h1 className="hero-title">
                   Dobrodošli natrag!
                 </h1>
-                <p className="mt-6 text-lg leading-relaxed text-slate-600">
+                <p className="mt-4 text-base leading-relaxed text-slate-600 md:text-lg">
                   Pristupite dostupnim anketama prilagođenim vašem studijskom programu.
                 </p>
-                <div className="mt-8">
+                <div className="mt-6">
                   <Link href="/surveys" className={primaryButtonClassName}>
                     Moje ankete
                   </Link>
@@ -175,14 +175,14 @@ export default async function HomePage() {
               </>
             ) : (
               <>
-                <h1 className="text-4xl font-extrabold leading-tight tracking-tight text-slate-900 sm:text-5xl lg:text-6xl">
+                <h1 className="hero-title">
                   Glas studenata za bolji studij.
                 </h1>
-                <p className="mt-6 text-lg leading-relaxed text-slate-600">
+                <p className="mt-4 text-base leading-relaxed text-slate-600 md:text-lg">
                   Službena platforma za anonimno provođenje studentskih anketa i evaluaciju
                   nastave na Fakultetu strojarstva, računarstva i elektrotehnike.
                 </p>
-                <div className="mt-8">
+                <div className="mt-6">
                   <Link href="/login" className={primaryButtonClassName}>
                     Započni anketu →
                   </Link>
@@ -191,18 +191,18 @@ export default async function HomePage() {
             )}
           </div>
 
-          <div className="flex justify-center lg:justify-end">
+          <div className="flex min-w-0 justify-center lg:justify-end">
             <img
               src="/examples_main.png"
               alt="Ilustracija studentskih anketa"
-              className="h-auto w-full max-w-lg object-contain mix-blend-multiply lg:max-w-xl"
+              className="h-auto w-full max-w-md object-contain mix-blend-multiply lg:max-w-lg"
             />
           </div>
         </div>
       </main>
 
-      <footer className="w-full bg-[#f3f2f8] pb-12 pt-6">
-        <div className="mx-auto max-w-7xl px-6">
+      <footer className="w-full min-w-0 bg-[#f3f2f8] pb-8 pt-4">
+        <div className="app-container">
           <FeatureCards cards={featureCards} />
         </div>
       </footer>

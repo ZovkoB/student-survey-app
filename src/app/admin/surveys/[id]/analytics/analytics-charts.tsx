@@ -28,7 +28,7 @@ import {
 import { formatDateTime, formatYearLabel } from "@/lib/i18n/hr";
 
 const chartCardClassName =
-  "rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm";
+  "w-full min-w-0 rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm md:p-6";
 
 const axisTick = { fontSize: 12, fill: ANALYTICS_AXIS_FILL };
 
@@ -189,8 +189,8 @@ export function ChoiceQuestionChart({
           {question.totalAnswers === 1 ? "odgovor" : "odgovora"}
         </p>
       </div>
-      <div className="grid gap-6 lg:grid-cols-2">
-        <div className="h-72">
+      <div className="app-grid-2">
+        <div className="h-72 min-w-0">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart
               data={chartData}
@@ -217,7 +217,7 @@ export function ChoiceQuestionChart({
             </BarChart>
           </ResponsiveContainer>
         </div>
-        <div className="space-y-3">
+        <div className="min-w-0 space-y-3">
           {question.options.map((option, index) => (
             <div key={option.id} className="space-y-1">
               <div className="flex items-center justify-between text-sm">
@@ -271,8 +271,8 @@ export function RatingQuestionChart({
           {question.totalAnswers === 1 ? "odgovor" : "odgovora"}
         </p>
       </div>
-      <div className="grid gap-6 lg:grid-cols-2">
-        <div className="h-72">
+      <div className="app-grid-2">
+        <div className="h-72 min-w-0">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={chartData} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
               <CartesianGrid strokeDasharray="3 3" stroke={ANALYTICS_GRID_STROKE} />
@@ -290,14 +290,14 @@ export function RatingQuestionChart({
             </BarChart>
           </ResponsiveContainer>
         </div>
-        <div className="grid grid-cols-2 gap-4">
-          <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+        <div className="grid w-full min-w-0 grid-cols-2 gap-4">
+          <div className="w-full min-w-0 rounded-xl border border-slate-200 bg-slate-50 p-4">
             <p className="text-sm text-slate-500">Prosjek</p>
             <p className="text-2xl font-bold text-slate-900">
               {question.average.toFixed(2)}
             </p>
           </div>
-          <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+          <div className="w-full min-w-0 rounded-xl border border-slate-200 bg-slate-50 p-4">
             <p className="text-sm text-slate-500">Medijan</p>
             <p className="text-2xl font-bold text-slate-900">
               {question.median.toFixed(1)}
@@ -306,7 +306,7 @@ export function RatingQuestionChart({
           {question.distribution.map((item, index) => (
             <div
               key={item.rating}
-              className="rounded-xl border border-slate-200 bg-slate-50 p-4"
+              className="w-full min-w-0 rounded-xl border border-slate-200 bg-slate-50 p-4"
             >
               <p className="text-sm text-slate-500">
                 {item.rating} {item.rating === 1 ? "zvjezdica" : "zvjezdice"}

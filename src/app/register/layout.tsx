@@ -8,7 +8,7 @@ export default function RegisterLayout({
   return (
     <div className="flex h-screen min-h-screen flex-col justify-between overflow-hidden bg-[#f3f2f8] text-slate-900">
       <header className="w-full shrink-0 bg-[#f3f2f8]">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-6">
+        <div className="app-container flex items-center justify-between py-4 md:py-5">
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#5c4eb4] text-white shadow-sm">
               <svg
@@ -40,7 +40,7 @@ export default function RegisterLayout({
         </div>
       </header>
 
-      <div className="flex flex-1 items-center justify-center overflow-y-auto px-4 py-8">
+      <div className="app-container flex flex-1 items-center justify-center overflow-y-auto py-8">
         {children}
       </div>
     </div>

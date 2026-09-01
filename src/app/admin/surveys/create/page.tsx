@@ -14,7 +14,7 @@ export default function CreateSurveyPage() {
           <ChevronLeft className="h-4 w-4" />
           Natrag na nadzornu ploču
         </Link>
-        <h1 className="mb-1 text-3xl font-bold text-slate-900">Izradi anketu</h1>
+        <h1 className="mb-1 text-2xl font-bold text-slate-900 md:text-3xl">Izradi anketu</h1>
         <p className="text-base text-slate-600">
           Izradite novu anketu s dinamičkim pitanjima i opcijama odgovora.
         </p>

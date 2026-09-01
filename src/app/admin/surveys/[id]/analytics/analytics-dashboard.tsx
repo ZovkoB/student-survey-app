@@ -33,7 +33,7 @@ function KpiCard({
   subtext?: string;
 }) {
   return (
-    <div className="flex flex-col justify-between rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm">
+    <div className="flex w-full min-w-0 flex-col justify-between rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm md:p-6">
       <div className="flex items-center justify-between text-xs font-semibold uppercase tracking-wider text-slate-500">
         <span>{title}</span>
         <Icon className="h-4 w-4 text-slate-400" />
@@ -50,7 +50,7 @@ function KpiCard({
 
 export function AnalyticsDashboard({ data }: AnalyticsDashboardProps) {
   return (
-    <div className="space-y-8">
+    <div className="w-full min-w-0 space-y-8">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <div>
           <Link
@@ -61,7 +61,7 @@ export function AnalyticsDashboard({ data }: AnalyticsDashboardProps) {
             Natrag na nadzornu ploču
           </Link>
           <div className="flex flex-wrap items-center gap-2">
-            <h1 className="text-3xl font-bold text-slate-900">{data.survey.title}</h1>
+            <h1 className="text-2xl font-bold text-slate-900 md:text-3xl">{data.survey.title}</h1>
             {data.survey.isActive ? (
               <span className="inline-flex rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-0.5 text-xs font-semibold text-emerald-700">
                 Aktivno
@@ -116,7 +116,7 @@ export function AnalyticsDashboard({ data }: AnalyticsDashboardProps) {
         </Alert>
       )}
 
-      <div className="grid gap-4 md:grid-cols-3">
+      <div className="app-grid-3">
         <KpiCard
           title="Ukupno odgovora"
           icon={Users}
@@ -155,7 +155,7 @@ export function AnalyticsDashboard({ data }: AnalyticsDashboardProps) {
               : "Kako su ispitanici raspoređeni po smjeru i godini studija."}
           </p>
         </div>
-        <div className="grid gap-4 xl:grid-cols-2">
+        <div className="app-grid-2">
           <DemographicBarChart
             title="Odgovori po smjeru"
             description="Broj predanih anketa po studijskom smjeru"

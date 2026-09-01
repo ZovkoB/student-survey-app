@@ -15,6 +15,7 @@ import {
 } from "@/lib/validations/auth";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { PasswordInput } from "@/components/ui/password-input";
 import { cn } from "@/lib/utils";
 
 const DEMO_VERIFICATION_CODE = "123456";
@@ -323,10 +324,9 @@ export function RegisterForm() {
               <Label htmlFor="password" className="text-sm font-medium text-slate-700">
                 Lozinka
               </Label>
-              <Input
+              <PasswordInput
                 id="password"
                 name="password"
-                type="password"
                 autoComplete="new-password"
                 value={password}
                 onChange={(event) => setPassword(event.target.value)}
@@ -348,10 +348,9 @@ export function RegisterForm() {
               >
                 Potvrda lozinke
               </Label>
-              <Input
+              <PasswordInput
                 id="confirmPassword"
                 name="confirmPassword"
-                type="password"
                 autoComplete="new-password"
                 value={confirmPassword}
                 onChange={(event) => setConfirmPassword(event.target.value)}

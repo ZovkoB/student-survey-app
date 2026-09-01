@@ -29,19 +29,17 @@ export default async function SurveyFillPage({
   if (!result.success) {
     if (result.message.includes("Već ste ispunili")) {
       return (
-        <div className="flex min-h-screen flex-col justify-between bg-[#f3f2f8 px-4 py-8">
-          <div className="mx-auto w-full max-w-4xl space-y-6">
-            <Link
-              href="/surveys"
-              className="inline-flex items-center gap-1 text-sm font-medium text-slate-600 transition-colors hover:text-slate-900"
-            >
-              <ChevronLeft className="h-4 w-4" />
-              Natrag na ankete
-            </Link>
-            <Alert>
-              <AlertDescription>{result.message}</AlertDescription>
-            </Alert>
-          </div>
+        <div className="space-y-6">
+          <Link
+            href="/surveys"
+            className="inline-flex items-center gap-1 text-sm font-medium text-slate-600 transition-colors hover:text-slate-900"
+          >
+            <ChevronLeft className="h-4 w-4" />
+            Natrag na ankete
+          </Link>
+          <Alert>
+            <AlertDescription>{result.message}</AlertDescription>
+          </Alert>
         </div>
       );
     }
@@ -54,17 +52,15 @@ export default async function SurveyFillPage({
   }
 
   return (
-    <div className="flex min-h-screen flex-col justify-between bg-[#f3f2f8 px-4 py-8">
-      <div className="mx-auto w-full max-w-4xl space-y-6">
-        <Link
-          href="/surveys"
-          className="inline-flex items-center gap-1 text-sm font-medium text-slate-600 transition-colors hover:text-slate-900"
-        >
-          <ChevronLeft className="h-4 w-4" />
-          Natrag na ankete
-        </Link>
-        <SurveyFillerForm survey={result.data} />
-      </div>
+    <div className="space-y-6">
+      <Link
+        href="/surveys"
+        className="inline-flex items-center gap-1 text-sm font-medium text-slate-600 transition-colors hover:text-slate-900"
+      >
+        <ChevronLeft className="h-4 w-4" />
+        Natrag na ankete
+      </Link>
+      <SurveyFillerForm survey={result.data} />
     </div>
   );
 }

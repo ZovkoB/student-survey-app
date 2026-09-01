@@ -16,9 +16,9 @@ export default async function StudentSurveysPage() {
   const completedSurveys = completedResult.data ?? [];
 
   return (
-    <div className="mx-auto w-full max-w-6xl px-4">
-      <div className="mb-8">
-        <h1 className="mb-1 text-3xl font-bold text-slate-900">Dostupne ankete</h1>
+    <>
+      <div className="mb-6">
+        <h1 className="mb-1 text-2xl font-bold text-slate-900 md:text-3xl">Dostupne ankete</h1>
         <p className="text-base text-slate-600">
           Ispunite ankete prilagođene vašem studijskom smjeru i godini.
         </p>
@@ -36,6 +36,6 @@ export default async function StudentSurveysPage() {
         availableSurveys={availableSurveys}
         completedSurveys={completedSurveys}
       />
-    </div>
+    </>
   );
 }

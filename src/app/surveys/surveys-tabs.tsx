@@ -83,7 +83,7 @@ export function SurveysTabs({
 
   return (
     <>
-      <nav className="mb-8 border-b border-slate-200">
+      <nav className="mb-6 border-b border-slate-200">
         <div className="flex gap-8">
           <button
             type="button"
@@ -109,11 +109,11 @@ export function SurveysTabs({
             description="Provjerite kasnije za nove ankete ili pregledajte završene ankete u drugom tabu."
           />
         ) : (
-          <div className="grid w-full grid-cols-1 gap-6 md:grid-cols-2">
+          <div className="app-grid-2">
             {availableSurveys.map((survey) => (
               <article
                 key={survey.id}
-                className="flex flex-col justify-between rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm transition-shadow hover:shadow-md"
+                className="flex w-full min-w-0 flex-col justify-between rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm transition-shadow hover:shadow-md md:p-6"
               >
                 <div>
                   <div className="mb-3 flex items-start justify-between gap-3">
@@ -155,11 +155,11 @@ export function SurveysTabs({
             description="Ankete koje ispunite pojavit će se ovdje nakon slanja odgovora."
           />
         ) : (
-          <div className="grid w-full grid-cols-1 gap-6 md:grid-cols-2">
+          <div className="app-grid-2">
             {completedSurveys.map((survey) => (
               <article
                 key={survey.id}
-                className="flex flex-col justify-between rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm"
+                className="flex w-full min-w-0 flex-col justify-between rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm md:p-6"
               >
                 <div>
                   <div className="mb-3 flex items-start justify-between gap-3">

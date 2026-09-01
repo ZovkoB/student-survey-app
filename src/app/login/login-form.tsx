@@ -9,6 +9,7 @@ import { AlertCircle } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { PasswordInput } from "@/components/ui/password-input";
 import { cn } from "@/lib/utils";
 
 const inputClassName =
@@ -177,10 +178,9 @@ export function LoginForm() {
           <Label htmlFor="password" className="text-sm font-medium text-slate-700">
             Lozinka
           </Label>
-          <Input
+          <PasswordInput
             id="password"
             name="password"
-            type="password"
             autoComplete="off"
             value={password}
             onChange={(event) => {

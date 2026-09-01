@@ -20,7 +20,7 @@ export default async function AdminLayout({
   return (
     <div className="flex min-h-screen flex-col justify-between bg-[#f3f2f8] text-slate-900">
       <header className="w-full border-b border-slate-200/80 bg-white/50 backdrop-blur-sm">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-6">
+        <div className="app-container flex items-center justify-between py-4 md:py-5">
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#5c4eb4] text-white shadow-sm">
               <svg
@@ -64,7 +64,7 @@ export default async function AdminLayout({
         </div>
       </header>
 
-      <main className="mx-auto w-full max-w-7xl flex-1 px-6 pt-8 pb-12">{children}</main>
+      <main className="app-container flex-1 pt-6 pb-10">{children}</main>
     </div>
   );
 }

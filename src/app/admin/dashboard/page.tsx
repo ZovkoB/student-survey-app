@@ -19,11 +19,11 @@ export default async function AdminDashboardPage() {
   const result = await getAdminSurveys();
 
   return (
-    <div className="space-y-6">
+    <div className="w-full min-w-0 space-y-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <h1 className="mb-1 text-3xl font-bold text-slate-900">Nadzorna ploča</h1>
-          <p className="mb-6 text-base text-slate-600">
+          <h1 className="mb-1 text-2xl font-bold text-slate-900 md:text-3xl">Nadzorna ploča</h1>
+          <p className="mb-4 text-base text-slate-600">
             Upravljajte anketama, pratite status i pregledajte prikupljene odgovore.
           </p>
         </div>
